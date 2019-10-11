@@ -21,3 +21,14 @@ var g:Color = Color.parse("rgba(12, 13, 14, 0.15)");
 var h:Color = Color.parse("#123");
 var i:Color = Color.parse("#123456");
 ```
+
+# KeyboardShortcut
+
+A class representing a keyboard shortcut.
+
+Usage:
+
+```
+var s:KeyboardShortcut = new KeyboardShortcut(true, false, false, "s"); // ctrl, alt, shift, key
+trace(s.toString());
+```
