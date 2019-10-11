@@ -412,9 +412,94 @@ class Color
             }
         }
         // hsl(hue, saturation, lightness)
-        // TODO
+        if(StringTools.startsWith(s, "HSL(")) {
+            logger.log(Log.DEBUG, "hsl() color representation");
+            s = StringTools.replace(s, "HSL(", "");
+            s = StringTools.replace(s, ")", "");
+            s = StringTools.replace(s, "%", "");
+            var numbers:Array<String> = s.split(",");
+            if(numbers.length != 3) {
+                logger.log(Log.DEBUG, "hsl() color representation, but " + numbers.length + " tupel?");
+                throw "Parsing string " + str + " failed! No corresponding color (case 4: " + numbers.length + " != 3)";
+            }
+            var h:Float = Std.parseFloat(numbers[0]);
+            var s:Float = Std.parseFloat(numbers[1]) / 100;
+            var l:Float = Std.parseFloat(numbers[2]) / 100;
+            logger.log(Log.DEBUG, "h: " + h + ", s: " + s + ", l: " + l);
+            return Color.hslToRgbColor(h, s, l);
+        }
         // hsla(hue, saturation, lightness, alpha)
-        // TODO
+        if(StringTools.startsWith(s, "HSLA(")) {
+            logger.log(Log.DEBUG, "hsla() color representation");
+            s = StringTools.replace(s, "HSLA(", "");
+            s = StringTools.replace(s, ")", "");
+            s = StringTools.replace(s, "%", "");
+            var numbers:Array<String> = s.split(",");
+            if(numbers.length != 4) {
+                logger.log(Log.DEBUG, "hsla() color representation, but " + numbers.length + " tupel?");
+                throw "Parsing string " + str + " failed! No corresponding color (case 5: " + numbers.length + " != 4)";
+            }
+            var h:Float = Std.parseFloat(numbers[0]);
+            var s:Float = Std.parseFloat(numbers[1]) / 100;
+            var l:Float = Std.parseFloat(numbers[2]) / 100;
+            var a:Float = Std.parseFloat(numbers[3]);
+            logger.log(Log.DEBUG, "h: " + h + ", s: " + s + ", l: " + l + ", a: " + a);
+            return Color.hslToRgbColor(h, s, l, a);
+        }
         throw "Parsing string " + str + " failed! No corresponding color (case default).";
+    }
+    
+    /**
+     * Convert an hsla tuple to a Color object.
+     * 
+     * @param h The hue (0 <= h < 360)
+     * @param s The saturation (0 <= s <= 1)
+     * @param l The lightness (0 <= l <= 1)
+     * @param a The alpha value (0 <= a <=1).
+     * @return The corresponding color.
+     */
+    public static function hslToRgbColor(h:Float, s:Float, l:Float, ?a:Float=1):Color {
+        logger.log(Log.METHOD, "h: " + h +", s: " + s + ", l: " + l + ", a: " + a);
+        if(!(0 <= h && h < 360)) {
+            throw "Hue must be in between 0 and 360 (0 inclusive, 360 exclusive), but is " + h;
+        } 
+        if(!(0 <= s && s <= 1)) {
+            throw "Saturation must be in between 0 and 1 (both inclusive), but is " + s;
+        }
+        if(!(0 <= l && l <= 1)) {
+            throw "Lightness must be in between 0 and 1 (both inclusive), but is " + l;
+        }
+        if(!(0 <= a && a <= 1)) {
+            throw "Alpha must be in between 0 and 1 (both inclusive), but is " + a;
+        }
+        var c:Float = (1 - Math.abs(2 * l - 1)) * s;
+        var x:Float = c * (1 - Math.abs((h / 60) % 2 - 1));
+        var m:Float = l - c / 2;
+        var r_:Float = 0, g_:Float = 0, b_:Float =  0;
+        if (0 <= h && h < 60) {
+            r_ = c;
+            g_ = x;
+        } else if (60 <= h && h < 120) {
+            r_ = x;
+            g_ = c;
+        } else if (120 <= h && h < 180) {
+            g_ = c;
+            b_ = x;
+        } else if (180 <= h && h < 240) {
+            g_ = x;
+            b_ = c;            
+        } else if (240 <= h && h < 300) {
+            r_ = x;
+            b_ = c;
+        } else if (300 <= h && h < 360) {
+            r_ = c;
+            b_ = x;
+        }
+        var red:Int = Std.int((r_ + m) * 255);
+        var green:Int = Std.int((g_ + m) * 255);
+        var blue:Int = Std.int((b_ + m) * 255);
+        var alpha:Int = Std.int(a * 100);
+        logger.log(Log.DEBUG, "red: " + red + ", green: " + green + ", blue: " + blue + ", alpha: " + alpha);
+        return new Color(red, green, blue, alpha);
     }
 }
