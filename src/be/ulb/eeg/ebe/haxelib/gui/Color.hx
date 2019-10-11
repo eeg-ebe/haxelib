@@ -320,7 +320,7 @@ class Color
      *
      * @return A textual representation of this color.
      */
-    public inline function getHtmlColorString():String {
+    public inline function toString():String {
         return "rgba(" + mRed + "," + mGreen + "," + mBlue + "," + (mAlpha / 100) + ")";
     }
     
