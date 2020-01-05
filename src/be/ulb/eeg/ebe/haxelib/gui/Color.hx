@@ -15,6 +15,8 @@
  */
 package be.ulb.eeg.ebe.haxelib.gui;
 
+import be.ulb.eeg.ebe.haxelib.lang.Object;
+
 import be.ulb.eeg.ebe.haxelib.logging.BaseLogger;
 import be.ulb.eeg.ebe.haxelib.logging.Log;
 
@@ -26,7 +28,7 @@ import StringTools;
  *
  * @author Yann Spoeri
  */
-class Color
+class Color extends Object
 {
     /**
      * The logger for this class.
@@ -331,6 +333,32 @@ class Color
      */
     public inline function clone():Color {
         return new Color(mRed, mGreen, mBlue, mAlpha);
+    }
+    
+    /**
+     * Check if this object is the same as another object.
+     * 
+     * @return True if the objects are the same, false otherwise.
+     */
+    public override function equals(o:Object):Bool {
+        var result:Bool = false;
+        if(Std.is(o, Color)) {
+            var oColor:Color = cast o;
+            result = (oColor.mAlpha == mAlpha) &&
+                    (oColor.mRed == mRed) &&
+                    (oColor.mGreen == mGreen) &&
+                    (oColor.mBlue == mBlue);
+        }
+        return result;
+    }
+    
+    /**
+     * Calculate a hashCode value for this object.
+     *
+     * @return A hashCode value for this object.
+     */
+    public override function hashCode():Int {
+        return mAlpha + mRed << 8 + mGreen << 16 + mBlue << 24;
     }
     
     /**
