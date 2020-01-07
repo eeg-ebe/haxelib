@@ -15,6 +15,8 @@
  */
 package be.ulb.eeg.ebe.haxelib.gui;
 
+import be.ulb.eeg.ebe.haxelib.lang.Object;
+
 import be.ulb.eeg.ebe.haxelib.logging.BaseLogger;
 import be.ulb.eeg.ebe.haxelib.logging.Log;
 
@@ -23,7 +25,7 @@ import be.ulb.eeg.ebe.haxelib.logging.Log;
  *
  * @author Yann Spöri
  */
-class KeyboardShortcut
+class KeyboardShortcut extends Object
 {
     /**
      * The logger for this class.
@@ -174,5 +176,44 @@ class KeyboardShortcut
         }
         result.add(mKey);
         return result.toString();
+    }
+    
+    /**
+     * Check if this object is the same as another object.
+     * 
+     * @return True if the objects are the same, false otherwise.
+     */
+    public override function equals(o:Object):Bool {
+        var result:Bool = false;
+        if(Std.is(o, KeyboardShortcut)) {
+            var oKey:KeyboardShortcut = cast o;
+            result = (oKey.mCtrlModifier == mCtrlModifier) &&
+                    (oKey.mAltModifier == mAltModifier) &&
+                    (oKey.mShiftModifier == mShiftModifier) &&
+                    (oKey.mKey == mKey);
+        }
+        return result;
+    }
+    
+    /**
+     * Calculate a hashCode value for this object.
+     *
+     * @return A hashCode value for this object.
+     */
+    public override function hashCode():Int {
+        var result:Int = 1;
+        for (i in 0...mKey.length) {
+            result = result * 3 + mKey.charCodeAt(i);
+        }
+        if(mCtrlModifier) {
+            result *= 5;
+        }
+        if(mAltModifier) {
+            result *= 7;
+        }
+        if(mShiftModifier) {
+            result *= 11;
+        }
+        return result;
     }
 }
