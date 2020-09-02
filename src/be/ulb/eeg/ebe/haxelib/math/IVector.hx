@@ -16,7 +16,7 @@
 package be.ulb.eeg.ebe.haxelib.math;
 
 /**
- * The 
+ * An Interface describing a vector.
  *
  * @author Yann Spöri
  */
