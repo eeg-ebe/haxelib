@@ -15,6 +15,8 @@
  */
 package be.ulb.eeg.ebe.haxelib.tests;
 
+import haxe.CallStack;
+
 import be.ulb.eeg.ebe.haxelib.lang.Object;
 
 import be.ulb.eeg.ebe.haxelib.logging.BaseLogger;
@@ -55,12 +57,11 @@ class TestRunner extends Object
      * Run this test-case. This method should get overwritten by sub-classes.
      */
     public function run() {
-        trace("Executing tests ...");
-        trace("\n");
+        toStdout("Executing tests ...\n\n");
         var failureCount:Int = 0;
         for (test in mTests) {
             test.clearFailures(); // just to ensure that test is clean
-            trace("Executing " + test.getName());
+            toStdout("Executing " + test.getName());
             try {
                 test.run();
             } catch(err:TestStopException) {
@@ -74,18 +75,31 @@ class TestRunner extends Object
             var testFailures:List<Failure> = test.getFailures();
             failureCount += testFailures.length;
             if (testFailures.length == 0) {
-                trace("  OK");
+                toStdout(" ...  OK\n");
             } else {
+                toStdout(" ... " + testFailures.length + " failure(s)");
                 for (failure in testFailures) {
-                    trace("  " + failure);
+                    toStdout("\n  " + failure);
                 }
+                toStdout("\n");
             }
         }
-        trace("\n");
+        toStdout("\n");
         if (failureCount == 0) {
-            trace("Finished (no failures)!");
+            toStdout("Finished (no failures)!\n");
         } else {
-            trace("Finished with " + failureCount + " failure(s)!");
+            toStdout("Finished with " + failureCount + " failure(s)!\n");
         }
+    }
+
+    /**
+     * Helper function to output a string on stdout on trace or ...
+     */
+    private static function toStdout(s:String):Void {
+        #if sys
+        Sys.print(s);
+        #else
+        trace(s);
+        #end
     }
 }
