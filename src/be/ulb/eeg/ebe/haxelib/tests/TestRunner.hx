@@ -63,8 +63,12 @@ class TestRunner extends Object
             trace("Executing " + test.getName());
             try {
                 test.run();
+            } catch(err:TestStopException) {
+                // Exception to indicate that the test-execution should be stopped
+                // If that's due to a failure, the failure should've been added
+                // already, so there's nothing to do here.
             } catch (err:Any) {
-                var failure:Failure = new Failure(Std.string(err), -1, "null", "null");
+                var failure:Failure = new Failure(Std.string(err), -1, "null", "null"); // TODO
                 test.addFailure(failure);
             }
             var testFailures:List<Failure> = test.getFailures();

@@ -63,7 +63,7 @@ class TestCase extends Object
             var failure:Failure = new Failure(description, pos.lineNumber, pos.methodName, pos.className);
             mFailures.add(failure);
             if (throws) {
-                throw "Failure " + description + " in test (@" + pos.lineNumber + ", " + pos.methodName + ", " + pos.className + ")";
+                throw new TestStopException();
             }
         }
     }
