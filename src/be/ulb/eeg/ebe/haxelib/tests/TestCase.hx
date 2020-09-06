@@ -33,6 +33,11 @@ class TestCase extends Object
     private var mFailures:List<Failure>;
 
     /**
+     * The number of times ensure was called.
+     */
+    private var mEnsureCount:Int;
+
+    /**
      * The name of this test-case.
      */
     private var mName:String;
@@ -49,6 +54,7 @@ class TestCase extends Object
         mFailures = new List<Failure>();
         mName = name;
         mDescription = description;
+        mEnsureCount = 0;
     }
 
     /**
@@ -59,6 +65,7 @@ class TestCase extends Object
      * @param throws       Whether to throw an exception in case the statemetn is false in order to skip the execution of the curren test.
      */
     public function ensure(stmt:Bool, ?description:String="", ?throws:Bool=true, ?pos:haxe.PosInfos):Void {
+        mEnsureCount++;
         if (!stmt) {
             var failure:Failure = new Failure(description, pos.lineNumber, pos.methodName, pos.className);
             mFailures.add(failure);
@@ -82,6 +89,7 @@ class TestCase extends Object
      */
     public function clearFailures():Void {
         mFailures.clear();
+        mEnsureCount = 0;     
     }
 
     /**
@@ -109,5 +117,15 @@ class TestCase extends Object
      * Run this test-case. This method should get overwritten by sub-classes.
      */
     public function run() {
+    }
+
+    /**
+     * Get the number of times ensure was called.
+     *
+     * @return The number of times ensure was called since clearFailures was
+     * called the last time.
+     */
+    public function getEnsureCount():Int {
+        return mEnsureCount;
     }
 }

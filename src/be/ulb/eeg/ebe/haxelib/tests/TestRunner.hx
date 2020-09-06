@@ -92,7 +92,11 @@ class TestRunner extends Object
             var testFailures:List<Failure> = test.getFailures();
             failureCount += testFailures.length;
             if (testFailures.length == 0) {
-                toStdout(" ...  OK\n");
+                if (test.getEnsureCount() == 0) {
+                    toStdout(" ...  Not implemented\n");
+                } else {
+                    toStdout(" ...  OK\n");
+                }
             } else {
                 toStdout(" ... " + testFailures.length + " failure(s)");
                 for (failure in testFailures) {
