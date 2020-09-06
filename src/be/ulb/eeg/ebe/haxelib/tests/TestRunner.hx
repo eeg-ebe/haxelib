@@ -69,8 +69,25 @@ class TestRunner extends Object
                 // If that's due to a failure, the failure should've been added
                 // already, so there's nothing to do here.
             } catch (err:Any) {
-                var failure:Failure = new Failure(Std.string(err), -1, "null", "null"); // TODO
-                test.addFailure(failure);
+                var errAsString:String = Std.string(err);
+                var stack:Array<StackItem> = CallStack.exceptionStack();
+                if (stack == null || stack.length == 0) {
+                    // too bad, getting the exception stacktrace failed
+                    var failure:Failure = new Failure(errAsString, -1, "?", "?");
+                    test.addFailure(failure);
+                } else {
+                    stack.reverse();
+                    var stackEle:StackItem = stack.pop();
+                    // and now how to get the data from the stackelement?
+                    // this seems to be the only way
+                    var stackEleStr:String = Std.string(stackEle);
+                    var parts:Array<String> = stackEleStr.split(",");
+                    var lineNumber:Int = -1; //Std.int(parts[2]);
+                    var methodName:String = "?";
+                    var className:String = parts[1];
+                    var failure:Failure = new Failure(errAsString, lineNumber, methodName, className);
+                    test.addFailure(failure);
+                }
             }
             var testFailures:List<Failure> = test.getFailures();
             failureCount += testFailures.length;
