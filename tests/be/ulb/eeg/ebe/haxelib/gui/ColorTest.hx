@@ -94,10 +94,65 @@ class ColorTest extends TestCase
         ensure(color01.toString() == "rgba(10,30,255,0.99)");
         var color02:Color = new Color(0, 8, 1);
         ensure(color02.toString() == "rgba(0,8,1,1)");
-        var color02:Color = new Color(11, 2, 100, 0);
-        ensure(color02.toString() == "rgba(11,2,100,0)");
-        var color02:Color = new Color(5, 18, 215, 50);
-        ensure(color02.toString() == "rgba(5,18,215,0.5)");
+        var color03:Color = new Color(11, 2, 100, 0);
+        ensure(color03.toString() == "rgba(11,2,100,0)");
+        var color04:Color = new Color(5, 18, 215, 50);
+        ensure(color04.toString() == "rgba(5,18,215,0.5)");
+    }
+
+    /**
+     * Test the clone method of the Color class.
+     */
+    public function testClone():Void {
+        var color01:Color = new Color(10, 33, 18, 11);
+        var color02:Color = color01.clone();
+        ensure(color02.getRed() == 10);
+        ensure(color02.getGreen() == 33);
+        ensure(color02.getBlue() == 18);
+        ensure(color02.getAlpha() == 11);
+    }
+
+    /**
+     * Test the equals method of the Color class.
+     */
+    public function testEquals():Void {
+        var color01:Color = new Color(10, 33, 18, 11);
+        var color02:Color = new Color(10, 33, 18, 11);
+        var color03:Color = new Color(11, 33, 18, 11);
+        var color04:Color = new Color(10, 34, 18, 11);
+        var color05:Color = new Color(10, 33, 19, 11);
+        var color06:Color = new Color(10, 33, 18, 10);
+        ensure(color01.equals(color02)); // same -> true
+        ensure(!color01.equals(color03)); // different red -> false
+        ensure(!color01.equals(color04)); // different green -> false
+        ensure(!color01.equals(color05)); // different blue -> false
+        ensure(!color01.equals(color06)); // different alpha -> false
+    }
+
+    /**
+     * Test the parse method of the Color class.
+     */
+    public function testParse():Void {
+        var color01:Color = Color.parse("green");
+        ensure(color01.toString() == "rgba(0,128,0,1)");
+        var color02:Color = Color.parse("rgb(80,0,0)");
+        ensure(color02.toString() == "rgba(80,0,0,1)");
+        var color03:Color = Color.parse("rgba(80,0,10,0.3)");
+        ensure(color03.toString() == "rgba(80,0,10,0.3)");
+        var color04:Color = Color.parse("#0F0");
+        ensure(color04.toString() == "rgba(0,255,0,1)");
+        var color05:Color = Color.parse("#010");
+        ensure(color05.toString() == "rgba(0,17,0,1)");
+        var color06:Color = Color.parse("#123456");
+        ensure(color06.toString() == "rgba(18,52,86,1)");
+        var color07:Color = Color.parse("hsl(0,0,0)");
+        ensure(color07.toString() == "rgba(0,0,0,1)");
+        var color08:Color = Color.parse("hsla(0,0,0,1)");
+        ensure(color08.toString() == "rgba(0,0,0,1)");
+        try {
+            var color08:Color = Color.parse("bla");
+            ensure(false);
+        } catch(err:Any) {}
     }
 
     /**
@@ -105,7 +160,10 @@ class ColorTest extends TestCase
      */
     public override function run() {
         testConstructor();
-        // getters and setters are tested in constructorTests
+        // getters and setters are tested in constructorTests, too
         testToString();
+        testClone();
+        testEquals();
+        testParse();
     }
 }
