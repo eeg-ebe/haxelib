@@ -15,6 +15,7 @@
  */
 package haxelib;
 
+import haxelib.cmd.CommandlineParserTest;
 import haxelib.logging.LoggingTest;
 
 /**
@@ -28,7 +29,8 @@ class RunTests
     /**
      * Run all tests ...
      */
-    public static function main() {
+    public static function main():Void {
         LoggingTest.testLoggingPackage();
+        CommandlineParserTest.testCmdPackage();
     }
 }
