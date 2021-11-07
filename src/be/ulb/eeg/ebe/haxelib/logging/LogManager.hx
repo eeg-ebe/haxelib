@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package be.ulb.eeg.ebe.haxelib.logging;
+package haxelib.logging;
 
-import haxe.ds.HashMap;
+import haxe.ds.StringMap;
 
 /**
  * The LogManager that manages everything that has to do with logging.
@@ -28,26 +28,35 @@ class LogManager
      * The instance of this manager.
      */
     private static var sInstance:LogManager;
-    
+
+    /**
+     * All registered loggers.
+     */
+    private var mLoggers:StringMap<ILogger>;
+
     /**
      * As this is a singleton, the constructor is private.
      */
     private function new() {
+        mLoggers = new Stringmap<ILogger>();
     }
-    
+
     /**
      * Register a new Logger.
      *
      * @param name      The name of the logger to register.
      * @param logger    The logger to register.
      */
-    public function register(name:String, logger:ILogger):Void {
+    public function register(logger:ILogger):Void {
+        // TODO, check whether there is another logger with this name
+        va name:String = logger.getName();
+        mLoggers.set(name, logger);
         // TODO - when registering, see whether there is a loglevel set for that name
         // then set the loglevel of the logger accordingly.
         // Furthermore add a way to iterate over the registered logger
         // in order to change the LogLevel of each logger later on.
     }
-    
+
     /**
      * Log a LogEntry.
      *
@@ -58,7 +67,7 @@ class LogManager
         // every logentry. Thus it becomes possible to define what exactly should
         // happen each LogEntry - e.g. trace/writeToFile/...
     }
-    
+
     /**
      * Get the LogManager instance.
      *
