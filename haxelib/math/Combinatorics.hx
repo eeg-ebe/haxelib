@@ -64,9 +64,43 @@ class Combinatorics
             i++;
         }
         return result;
-//        C[0] = 1
-//for (int k = 0; k < n; ++ k)
-//    C[k+1] = (C[k] * (n-k)) / (k+1)
+    }
+
+    /**
+     * Calculate (n) (n + 1) (n + 2) ... (n + k - 1)
+     */
+    public static inline function multUp(a:BigInt, k:BigInt):BigInt {
+        // a_(k) = a (a + 1) (a + 2) ... (a + k - 1)
+        if (k == 0) {
+            return 1;
+        }
+        var result:BigInt = a;
+        var till:BigInt = a + k;
+        var i:BigInt = a + 1;
+        while (i < till) {
+            result = result * i;
+            i++;
+        }
+        return result;
+    }
+
+    /**
+     * Calculate (n) (n - 1) (n - 2) ... (n - k + 1)
+     */
+    public static inline function multDown(a:BigInt, k:BigInt):BigInt {
+        // a_[k] = a (a - 1) (a - 2) ... (a - k + 1)
+        // 4 ... 3
+        if (k == 0) {
+            return 1;
+        }
+        var result:BigInt = a;
+        var till:BigInt = a - k;
+        var i:BigInt = a - 1;
+        while (i > till) {
+            result = result * i;
+            i--;
+        }
+        return result;
     }
 
     public static function main() {
@@ -78,6 +112,7 @@ class Combinatorics
         trace(factorial(BigInt.fromString("5")));
         trace(factorial(BigInt.fromString("6")));
         */
+        /*
         trace("XXX");
         trace("" + comb(0, 0));
         trace("" + comb(1, 0) + " " + comb(1, 1));
@@ -86,5 +121,9 @@ class Combinatorics
         trace("" + comb(4, 0) + " " + comb(4, 1) + " " + comb(4, 2) + " " + comb(4, 3) + " " + comb(4, 4));
         trace("" + comb(5, 0) + " " + comb(5, 1) + " " + comb(5, 2) + " " + comb(5, 3) + " " + comb(5, 4) + " " + comb(5, 5));
         trace("" + comb(6, 0) + " " + comb(6, 1) + " " + comb(6, 2) + " " + comb(6, 3) + " " + comb(6, 4) + " " + comb(6, 5) + " " + comb(6, 6));
+        */
+        trace(multUp(3, 4)); // 3 * 4 * 5 * 6 = 12 * 30 = 360
+        trace(multDown(4, 2)); // 4 * 3 = 12
+        trace(multDown(8, 4)); // 8 * 7 * 6 * 5 = 56 * 30 = 1680
     }
 }
