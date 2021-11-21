@@ -77,6 +77,14 @@ abstract Fractional(Array<BigInt>) to Array<BigInt>
     }
 
     /**
+     * Convert this Fractional into a float number.
+     */
+    public inline function toFloat(precision:Int):Float {
+        var d = BigInt.divMod(this[0], this[1]);
+        return (d.quotient.toInt() + 0.0) + (d.remainder * precision / this[1]).toInt() / precision;
+    }
+
+    /**
      * Return a string representation of this fractional.
      *
      * @return A string representation of this fractional.
