@@ -43,9 +43,4 @@ interface IClade
      * @return The clades connected to this clade.
      */
     public function getChilds():List<IClade>;
-
-    /**
-     * Add a child clade to this clade.
-     */
-    public function addChild(child:IClade):Void;
 }

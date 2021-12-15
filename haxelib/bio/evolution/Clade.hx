@@ -33,6 +33,16 @@ class Clade implements IClade
     private var mDist:Float;
 
     /**
+     * A possible bootstrap value connected to this clade.
+     */
+    private var mBootstrap:Float;
+
+    /**
+     * A possible probability value connected to this clade.
+     */
+    private var mProbability:Float;
+
+    /**
      * Possible child nodes.
      */
     private var mChilds:List<IClade>;
@@ -41,8 +51,50 @@ class Clade implements IClade
      * Create a new Clade.
      */
     public function new(?name:String, ?dist:Float) {
+        setName(name);
+        setDistance(dist);
+    }
+
+    /**
+     * Set the name of this clade.
+     */
+    public function setName(name:String):Void {
         mName = name;
+    }
+
+    /**
+     * Set the distance to the parental clade.
+     */
+    public function setDistance(dist:Float):Void {
         mDist = dist;
+    }
+
+    /**
+     * Set the bootstrap value of this clade.
+     */
+    public function setBootstrap(bootstrap:Float):Void {
+        mBootstrap = bootstrap;
+    }
+
+    /**
+     * Get the bootsrap value of this clade.
+     */
+    public function getBootstrap():Float {
+        return mBootstrap;
+    }
+
+    /**
+     * Set the probability value of this clade.
+     */
+    public function setProbability(prob:Float):Void {
+        mProbability = prob;
+    }
+
+    /**
+     * Get the probability value of this clade.
+     */
+    public function getProbability():Float {
+        return mProbability;
     }
 
     /**

@@ -33,15 +33,7 @@ class Newick
     Length -> empty | ":" number
     */
 
-    private static function parseBranchSet(s:String, begin:Int, stop:Int):IClade {
-        return null;
-    }
-
-    private static function parseInternal(s:String, begin:Int, stop:Int):{name:String, number:Float} {
-        return null;
-    }
-
-    private static function parse_(s:String, begin:Int, stop:Int):IClade {
+    private static function parse_(s:String, begin:Int, stop:Int):Clade {
         if (begin >= stop) {
             // empty name
             var result:Clade = new Clade("", -1);
@@ -59,7 +51,6 @@ class Newick
         }
         // braces
         if (s.charAt(begin) == "(") {
-            trace(s.substring(begin, stop));
             var subChilds:List<IClade> = new List<IClade>();
             var braceCounter:Int = 0;
             var braceStop:Int = stop;
@@ -81,29 +72,32 @@ class Newick
                 }
             }
             subChilds.add(parse_(s, lastBegin, braceStop));
-            trace("X " + s + " " + begin + " " + stop + " '" + s.substring(braceStop + 1, stop) + "' ");
-            var result:IClade = parse_(s, braceStop + 1, stop);
+            var result:Clade = parse_(s, braceStop + 1, stop);
             for (child in subChilds) {
                 result.addChild(child);
             }
             return result;
         }
         // parse rest/name
-        var name:String = s.substring(begin, stop);
-        var sepPos:Int = name.indexOf(":");
-        var result:Clade = null;
-        if (sepPos == -1) {
-            result = new Clade(name, -1);
-        } else {
-            var fStr:String = name.substring(sepPos + 1);
-            var f:Float = Std.parseFloat(StringTools.trim(fStr));
-            name = StringTools.trim(name.substring(0, sepPos));
-            result = new Clade(name, f);
+        var result:Clade = new Clade(null);
+        var partsString:String = s.substring(begin, stop);
+        var parts:Array<String> = partsString.split(":");
+        if (parts.length >= 1) {
+            var name:String = StringTools.trim(parts[0]);
+            result.setName(name);
+        }
+        if (parts.length >= 2) {
+            var f:Float = Std.parseFloat(StringTools.trim(parts[1]));
+            result.setDistance(f);
+        }
+        if (parts.length >= 3) {
+            var f:Float = Std.parseFloat(StringTools.trim(parts[1]));
+            result.setDistance(f);
         }
         return result;
     }
 
-    public static function parse(s:String):IClade {
+    public static function parse(s:String):Clade {
         if (s == null) {
             throw "String to parse must not be null!";
         }
@@ -127,7 +121,7 @@ class Newick
     }
 
     public static function main() {
-        var result:IClade = parse("((B:0.2,(C:0.3,D:0.4)E:0.5,(G,H))F:0.1)A;");
+        var result:IClade = parse("(B:0.2,(C:0.3,D:0.4)E:0.5,(G,H))F:0.1:0.3:1;");
         trace("\n" + print(result));
     }
     public static function print(clade:IClade, ?indents:Int=0):String {
@@ -135,7 +129,7 @@ class Newick
         for (i in 0...indents) {
             result.add(" ");
         }
-        result.add("+ " + clade.getName() + " (" + clade.getDistance() + ")\n");
+//        result.add("+ " + clade.getName() + " (" + clade.getDistance() + ";" + clade.getBootstrap() + ";" + clade.getProbability() +  ")\n");
         var childs:List<IClade> = clade.getChilds();
         if (childs != null) {
             for (child in childs) {
