@@ -95,6 +95,25 @@ class Sequence
         return ">" + mName + "\n" + mSequence;
     }
 
+    public inline function toStringL(maxLen:Int):String {
+        var result:Array<String> = new Array<String>();
+        result.push(">");
+        result.push(mName);
+        result.push("\n");
+        var seqLength:Int = mSequence.length;
+        var startPos:Int = 0;
+        while (startPos < seqLength) {
+            var endPos:Int = (startPos + maxLen > seqLength) ? seqLength : startPos + maxLen;
+            var s:String = mSequence.substring(startPos, endPos);
+            result.push(s);
+            if (endPos != seqLength) {
+                result.push("\n");
+            }
+            startPos += maxLen;
+        }
+        return result.join("");
+    }
+
     public static function main() {
         var s:Sequence = new Sequence("mySeq", "ACTAGCGTACTACG");
         trace(s.getName());
