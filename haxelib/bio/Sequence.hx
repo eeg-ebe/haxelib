@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package haxelib.logging;
+package haxelib.bio;
 
 /**
  * A Sequence.
@@ -25,12 +25,12 @@ class Sequence
     /**
      * The name connected to this sequence.
      */
-    private static var mName:String;
+    private var mName:String;
 
     /**
      * The sequence itself.
      */
-    private static var mSequence:String;
+    private var mSequence:String;
 
     /**
      * As this is a singleton, the constructor is private.
@@ -57,8 +57,8 @@ class Sequence
     /**
      * Set the sequence of this sequence.
      */
-    public inline function setSequence(seq:String):Void {
-        if (mSequence == null) {
+    public function setSequence(seq:String):Void {
+        if (seq == null) {
             throw "Sequence must not be null!";
         }
         mSequence = seq.toUpperCase();
@@ -83,8 +83,24 @@ class Sequence
      */
     public inline function charAt(pos:Int):String {
         if (!(0 <= pos && pos < mSequence.length)) {
-            throw "Pos (" + i + ") is out of range!";
+            throw "Pos (" + pos + ") is out of range!";
         }
         return mSequence.charAt(pos);
+    }
+
+    /**
+     * Create a textual representation of this Sequence object.
+     */
+    public inline function toString():String {
+        return ">" + mName + "\n" + mSequence;
+    }
+
+    public static function main() {
+        var s:Sequence = new Sequence("mySeq", "ACTAGCGTACTACG");
+        trace(s.getName());
+        trace(s.getSequence());
+        trace(s.length());
+        trace(s.charAt(3));
+        trace(s.toString());
     }
 }
