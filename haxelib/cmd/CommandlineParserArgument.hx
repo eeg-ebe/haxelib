@@ -89,7 +89,11 @@ class CommandlineParserArgument
         mName = name;
         mArgs = args;
         mType = type;
-        mDefault = (type == "bool") ? "false" : def; // implicite default value for bools
+        if (def == null) {
+            mDefault = (type == "bool") ? "false" : def; // implicite default value for bools
+        } else {
+            mDefault = def;
+        }
         mRequired = required;
         mHelp = help;
         mGiven = false;
