@@ -62,6 +62,51 @@ class System
     }
     
     /**
+     * Get the value of an integer property.
+     */
+    public static inline function getIntProperty(key:String, ?def:Int=0):Int {
+        var result:Int = def;
+        if (properties.exists(key)) {
+            var val:String = properties.get(key);
+            var parsed:Null<Int> = Std.parseInt(val);
+            if (parsed != null) {
+                result = parsed;
+            }
+        }
+        return result;
+    }
+    
+    /**
+     * Get the value of a float property.
+     */
+    public static inline function getFloatProperty(key:String, ?def:Float=0):Float {
+        var result:Float = def;
+        if (properties.exists(key)) {
+            var val:String = properties.get(key);
+            var parsed:Float = Std.parseFloat(val);
+            if (Math.isNaN(parsed)) {
+                result = parsed;
+            }
+        }
+        return result;
+    }
+    
+    /**
+     * Get the value of a boolean property.
+     */
+    public static inline function getBoolProperty(key:String, ?def:Bool=false):Bool {
+        var result:Bool = def;
+        if (properties.exists(key)) {
+            var val:String = properties.get(key);
+            var upperVal:String = val.toUpperCase();
+            if (upperVal == "TRUE") {
+                result = true;
+            }
+        }
+        return result;
+    }
+    
+    /**
      * Get the haxe compiler version that was used to compile this program.
      */
     public static macro function getHaxeCompilerVersion() {
