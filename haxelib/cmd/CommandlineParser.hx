@@ -145,8 +145,25 @@ class CommandlineParser
             }
             // now store
             if (cArg == null) {
-                result.setErrorMessage("Unknown argument '" + arg + "'!\n\n" + getHelp());
-                break;
+                var systemArg:String = "--system:";
+                if (StringTools.startsWith(arg, systemArg)) {
+                    var argLen:Int = systemArg.length;
+                    var rest:String = arg.substr(argLen);
+                    var eqPos:Int = rest.indexOf("=");
+                    if (eqPos > 0) {
+                        var key:String = rest.substr(0, eqPos);
+                        var val:String = rest.substr(eqPos + 1);
+                        System.setProperty(key, val);
+                    } else {
+                        result.setErrorMessage("Unknown argument '" + arg + "'!\n\n" + getHelp());
+                        break;
+                    }
+                    ++pos;
+                    continue;
+                } else {
+                    result.setErrorMessage("Unknown argument '" + arg + "'!\n\n" + getHelp());
+                    break;
+                }
             } else if (cArg.isGiven()) {
                 result.setErrorMessage("Argument '" + arg + "' already given!\n\n" + getHelp());
                 break;
