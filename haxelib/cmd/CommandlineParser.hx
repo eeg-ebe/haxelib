@@ -17,9 +17,6 @@ package haxelib.cmd;
 
 import haxe.ds.StringMap;
 import haxelib.system.System;
-#if sys
-import sys.io.File;
-#end
 
 /**
  * A commandline parser.
@@ -158,17 +155,6 @@ class CommandlineParser
             } else {
                 var value:String = args[++pos];
                 result.store(cArg.getName(), value);
-                #if sys
-                if (cArg.getType() == "file") {
-                    try {
-                        var fileContent:String = File.getContent(value);
-                        result.store(cArg.getName() + "_FileContent", fileContent);
-                    } catch(e:Dynamic) {
-                        result.setErrorMessage("Unable to read file '" + value + "'!\n\n" + getHelp());
-                        break;
-                    }
-                }
-                #end
             }
             cArg.setGiven(true);
             ++pos;
