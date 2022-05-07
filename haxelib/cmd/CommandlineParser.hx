@@ -16,6 +16,7 @@
 package haxelib.cmd;
 
 import haxe.ds.StringMap;
+import haxelib.system.System;
 #if sys
 import sys.io.File;
 #end
@@ -114,6 +115,8 @@ class CommandlineParser
             }
             result.add("\n");
         }
+        result.add("\n");
+        result.add("Created with haxe version " + System.getHaxeCompilerVersion() + " @ " + System.getBuildTime());
         return result.join("");
     }
 
