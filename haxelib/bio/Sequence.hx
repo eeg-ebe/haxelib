@@ -35,9 +35,9 @@ class Sequence
     private var mSequence:String;
 
     /**
-     * As this is a singleton, the constructor is private.
+     * Create a new sequence object.
      */
-    private function new(name:String, seq:String) {
+    public function new(name:String, seq:String) {
         setName(name);
         setSequence(seq);
     }
