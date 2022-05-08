@@ -15,6 +15,8 @@
  */
 package haxelib.bio;
 
+import haxelib.iterators.StringIterator;
+
 /**
  * A Sequence.
  *
@@ -93,6 +95,13 @@ class Sequence
      */
     public inline function toString():String {
         return ">" + mName + "\n" + mSequence;
+    }
+
+    /**
+     * Iterate over this sequence.
+     */
+    public inline function iterator() {
+        return new StringIterator(mSequence);
     }
 
     public inline function toStringL(maxLen:Int):String {

@@ -56,5 +56,8 @@ class DNASequence extends Sequence
         trace(s.length());
         trace(s.charAt(3));
         trace(s.toString());
+        for (c in s) {
+            trace(c);
+        }
     }
 }
