@@ -122,6 +122,21 @@ class Sequence
         }
         return result.join("");
     }
+    
+    public inline function hashCode():Int {
+        var result:Int = 17;
+        for (i in 0...mName.length) {
+            result = result * 3 + mName.charCodeAt(i);
+        }
+        for (i in 0...mSequence.length) {
+            result = result * 5 + mSequence.charCodeAt(i);
+        }
+        return result;
+    }
+    
+    public inline function equals(s:Sequence):Bool {
+        return mName == s.mName && mSequence == s.mSequence;
+    }
 
     public static function main() {
         var s:Sequence = new Sequence("mySeq", "ACTAGCGTACTACG");
