@@ -51,6 +51,33 @@ class SequenceListAnalyzer
         return result;
     }
     
+    public function checkCharsInSequences(lst:List<Sequence>, allowedChars:List<String>):{s:Sequence, l:List<Int>} {
+        var unallowed:List<Int> = new List<Int>();
+        for (e in lst) {
+            var i:Int = 0;
+            for (char in e) {
+                var allowed:Bool = false;
+                for (c in allowedChars) {
+                    if (char == c) {
+                        allowed = true;
+                        break;
+                    }
+                }
+                if (! allowed) {
+                    unallowed.add(i);
+                }
+                ++i;
+            }
+            if (! unallowed.isEmpty()) {
+                return {
+                    s: e,
+                    l: unallowed
+                };
+            }
+        }
+        return null;
+    }
+    
     public function escapePositionsInSequencesExcept(lst:List<Sequence>, allowedChars:List<String>):List<Sequence> {
         var result:List<Sequence> = new List<Sequence>();
         var positionsToEscape:IntMap<Bool> = new IntMap<Bool>(); // An IntSet would be better, but does not (yet?) exist ;)
@@ -100,15 +127,32 @@ class SequenceListAnalyzer
         return result;
     }
     
+    public function combineDuplicatedSequencesInDataSet(lst:List<Sequence>):StringMap<List<Sequence>> {
+        var result:StringMap<List<Sequence>> = new StringMap<List<Sequence>>();
+        for (e in lst) {
+            var seq:String = e.getSequence();
+            if (result.exists(seq)) {
+                result.get(seq).add(e);
+            } else {
+                var l:List<Sequence> = new List<Sequence>();
+                l.add(e);
+                result.set(seq, l);
+            }
+        }
+        return result;
+    }
+    
     public static function main() {
         var analyzer:SequenceListAnalyzer = new SequenceListAnalyzer();
         var s1:Sequence = new Sequence("A", "AATGGTA--ACTGAG?TA");
         var s2:Sequence = new Sequence("B", "AT-GGTA--ACTGAGCTA");
         var s3:Sequence = new Sequence("B", "AT-GGTA--ACTGC-CTA");
+        var s4:Sequence = new Sequence("C", "AT-GGTA--ACTGC-CTA");
         var l:List<Sequence> = new List<Sequence>();
         l.add(s1);
         l.add(s2);
         l.add(s3);
+        l.add(s4);
         var allowedChar:List<String> = new List<String>();
         allowedChar.add("A");
         allowedChar.add("C");
@@ -121,6 +165,10 @@ class SequenceListAnalyzer
         trace("===");
         var ln:List<String> = analyzer.getDuplicatedNamesInDataSet(l);
         for (e in ln) {
+            trace(e);
+        }
+        var r = analyzer.combineDuplicatedSequencesInDataSet(l);
+        for (e in r) {
             trace(e);
         }
     }
