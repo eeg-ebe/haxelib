@@ -72,11 +72,11 @@ class Message
      */
     public function getImportanceAsText():String {
         if (mImportance == 0) {
-            return "ALL";
-        } else if (mImportance == 1) {
             return "DEBUG-LOW";
-        } else if (mImportance == 2) {
+        } else if (mImportance == 1) {
             return "DEBUG";
+        } else if (mImportance == 2) {
+            return "DEBUG-WRN";
         } else if (mImportance == 3) {
             return "INFO";
         } else if (mImportance == 4) {
