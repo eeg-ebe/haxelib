@@ -30,6 +30,11 @@ class System
     private static var properties:StringMap<String> = new StringMap<String>();
     
     /**
+     * Reference to the main message collector.
+     */
+    public static var messages = new MessageCollector();
+    
+    /**
      * Set the value of a system property.
      */
     public static inline function setProperty(key:String, value:String):Void {
@@ -162,5 +167,7 @@ class System
         var target = getTargetLanguage();
         var message = "Compiled towards " + target + " using compiler " + compilerVersion + " at " + buildTime;
         trace(message);
+        System.messages.setColoredOutput(true);
+        System.messages.add(1, "TEST", "MESSAGE");
     }
 }
