@@ -41,7 +41,7 @@ class StringMatrix extends Matrix
     private var mNamePosLookup:StringMap<Int>;
 
     /**
-     * Create a new DistanceMatrix.
+     * Create a new StringMatrix.
      */
     public function new(names:Vector<String>) {
         if (names == null || names.length == 0) {
@@ -57,14 +57,14 @@ class StringMatrix extends Matrix
     }
 
     /**
-     * return the names connected to this distance matrix.
+     * return the names connected to this String Matrix.
      */
     public inline function getNames():Vector<String> {
         return mNames;
     }
 
     /**
-     * Lookup a distance.
+     * Lookup a value.
      */
     public inline function lookup(x1:String, x2:String):Float {
         var ret:Float = 0;
@@ -77,25 +77,15 @@ class StringMatrix extends Matrix
             if (pos2 == null) {
                 throw x2 + " not in map!";
             }
-            if (pos1 > pos2) {
-                var swap:Int = pos1;
-                pos1 = pos2;
-                pos2 = swap;
-            }
             ret = mValues.get(pos1 + pos2 * mWidth);
         }
         return ret;
     }
 
     /**
-     * Set a distance.
+     * Set a value.
      */
     public inline function set(x1:String, x2:String, d:Float):Void {
-        if (x1 == x2) {
-            if (d != 0) {
-                throw "Distance of identical objects must be 0!";
-            }
-        }
         var pos1:Null<Int> = mNamePosLookup.get(x1);
         if (pos1 == null) {
             throw x1 + " not in map!";
@@ -103,11 +93,6 @@ class StringMatrix extends Matrix
         var pos2:Null<Int> = mNamePosLookup.get(x2);
         if (pos2 == null) {
             throw x2 + " not in map!";
-        }
-        if (pos1 > pos2) {
-            var swap:Int = pos1;
-            pos1 = pos2;
-            pos2 = swap;
         }
         mValues.set(pos1 + pos2 * mWidth, d);
     }
@@ -117,7 +102,7 @@ class StringMatrix extends Matrix
      */
     public override function toString():String {
         var result:Array<String> = new Array<String>();
-        result.push("Dist");
+        result.push("M");
         for (name in mNames) {
             result.push("\t" + name);
         }
@@ -127,9 +112,6 @@ class StringMatrix extends Matrix
             result.push(Std.string(name1));
             var y:Int = 0;
             for (name2 in mNames) {
-                if (y >= x) {
-                    break;
-                }
                 result.push("\t" + mValues.get(y + x * mWidth));
                 y++;
             }
