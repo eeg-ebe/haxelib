@@ -147,16 +147,26 @@ class CommandlineParser
             if (cArg == null) {
                 var systemArg:String = "--system:";
                 if (StringTools.startsWith(arg, systemArg)) {
-                    var argLen:Int = systemArg.length;
-                    var rest:String = arg.substr(argLen);
-                    var eqPos:Int = rest.indexOf("=");
-                    if (eqPos > 0) {
-                        var key:String = rest.substr(0, eqPos);
-                        var val:String = rest.substr(eqPos + 1);
-                        System.setProperty(key, val);
+                    if (arg == "--system:directOutput") {
+                        System.messages.setDirectOutput(true);
+                    } else if (arg == "--system:noDirectOutput") {
+                        System.messages.setDirectOutput(false);
+                    } else if (arg == "--system:coloredOutput") {
+                        System.messages.setColoredOutput(true);
+                    } else if (arg == "--system:noColoredOutput") {
+                        System.messages.setColoredOutput(false);
                     } else {
-                        result.setErrorMessage("Unknown argument '" + arg + "'!\n\n" + getHelp());
-                        break;
+                        var argLen:Int = systemArg.length;
+                        var rest:String = arg.substr(argLen);
+                        var eqPos:Int = rest.indexOf("=");
+                        if (eqPos > 0) {
+                            var key:String = rest.substr(0, eqPos);
+                            var val:String = rest.substr(eqPos + 1);
+                            System.setProperty(key, val);
+                        } else {
+                            result.setErrorMessage("Unknown argument '" + arg + "'!\n\n" + getHelp());
+                            break;
+                        }
                     }
                     ++pos;
                     continue;
@@ -191,4 +201,6 @@ class CommandlineParser
         }
         return result;
     }
+    
+    public static function main() {}
 }
