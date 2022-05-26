@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package haxelib.util;
+package haxelib.system;
 
 /**
  * A message to show to show e.g. the user.
@@ -118,7 +118,7 @@ class Message
     /**
      * Get a textual representation of this message.
      */
-    private function toString():String {
+    public function toString():String {
         var result:Array<String> = [];
         result.push(mNow.toString());
         result.push(" ");
@@ -139,7 +139,7 @@ class Message
     /**
      * Get an escaped textual representation of this message.
      */
-    private function toEscapeString():String {
+    public function toEscapeString():String {
         var result:Array<String> = [];
         result.push("\x1B[1;37m");
         result.push(mNow.toString());
@@ -167,7 +167,7 @@ class Message
     /**
      * Get an html representation of this message.
      */
-    private function toHtmlString():String {
+    public function toHtmlString():String {
         var result:Array<String> = [];
         result.push("<span class='message messageType" + mImportance + "'>");
         result.push("<span class='messageDate'>");
