@@ -28,18 +28,28 @@ class SequenceListAnalyzer
     public function new() {
     }
     
-    public function checkAllSequencesSameLength(lst:List<Sequence>):Bool {
+    public function containsASequenceWithAnEmptyName(lst:List<Sequence>):Bool {
+        for (s in lst) {
+            var name:String = StringTools.trim(s.getName());
+            if (name == null || name == "") {
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    public function checkAllSequencesSameLength(lst:List<Sequence>):Sequence {
         var seqLength:Int = -1;
         for (s in lst) {
             if (seqLength == -1) {
                 seqLength = s.length();
             } else {
                 if (s.length() != seqLength) {
-                    return false;
+                    return s;
                 }
             }
         }
-        return true;
+        return null;
     }
     
     public function toDNASequences(lst:List<Sequence>):List<DNASequence> {
@@ -51,7 +61,7 @@ class SequenceListAnalyzer
         return result;
     }
     
-    public function checkCharsInSequences(lst:List<Sequence>, allowedChars:List<String>):{s:Sequence, l:List<Int>} {
+    public function checkCharsInSequences(lst:List<Sequence>, allowedChars:Array<String>):{s:Sequence, l:List<Int>} {
         var unallowed:List<Int> = new List<Int>();
         for (e in lst) {
             var i:Int = 0;
