@@ -113,7 +113,7 @@ class CommandlineParser
             result.add("\n");
         }
         result.add("\n");
-        result.add("Created with haxe version " + System.getHaxeCompilerVersion() + " @ " + System.getBuildTime());
+        result.add("(Created with haxe version " + System.getHaxeCompilerVersion() + "; Buildtime " + Date.fromTime(System.getBuildTime() * 1000).toString() + ")");
         return result.join("");
     }
 
