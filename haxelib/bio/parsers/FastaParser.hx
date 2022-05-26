@@ -50,6 +50,10 @@ class FastaParser
                 seq = seq.toUpperCase() + line;
             }
         }
+        if (name != null) {
+            var s:Sequence = new Sequence(name, seq);
+            result.add(s);
+        }
         return result;
     }
     
