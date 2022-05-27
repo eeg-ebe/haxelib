@@ -35,11 +35,13 @@ class StringMatrixReader
         }
         var names:Array<String> = linesStripped[0].split("\t");
         var namesSize:Int = names.length;
-        var namesV:Vector<String> = new Vector(namesSize);
+        var namesV:Vector<String> = new Vector(namesSize - 1);
         var i:Int = 0;
         for (name in names) {
-            var nameStripped:String = StringTools.trim(name);
-            namesV[i] = nameStripped;
+            if (i != 0) {
+                var nameStripped:String = StringTools.trim(name);
+                namesV[i-1] = nameStripped;
+            }
             i++;
         }
         var result:StringMatrix = new StringMatrix(namesV);
@@ -59,7 +61,7 @@ class StringMatrixReader
     }
     
     public static function main() {
-        var m:StringMatrix = readMatrix("\tA\tB\nA\t0\t1\nB\t2\t3");
+        var m:StringMatrix = readMatrix("Matrix\tA\tB\nA\t0\t1\nB\t2\t3");
         trace(m.toString());
     }
 }
