@@ -17,6 +17,8 @@ package haxelib.bio;
 
 import haxe.ds.IntMap;
 import haxe.ds.StringMap;
+import haxe.ds.Vector;
+import haxelib.util.StringMatrix;
 
 /**
  * A dataset for multiple sequences.
@@ -26,6 +28,65 @@ import haxe.ds.StringMap;
 class SequenceListAnalyzer
 {
     public function new() {
+    }
+    
+    public inline function isATCG(c:String) {
+        return c == "A" || c == "T" || c == "C" || c == "G";
+    }
+    
+    public function toDistanceMatrixUsingPairwiseComparison(lst:List<Sequence>):StringMatrix {
+        var names:Vector<String> = new Vector<String>(lst.length);
+        var i:Int = 0;
+        for (seq in lst) {
+            names[i++] = seq.getName();
+        }
+        var matrix:StringMatrix = new StringMatrix(names);
+        var i:Int = 0;
+        for (seq1 in lst) {
+            var j:Int = 0;
+            var seqName1:String = seq1.getName();
+            for (seq2 in lst) {
+                if (j > i) {
+                    break;
+                }
+                var seqName2:String = seq2.getName();
+                if (i == j) {
+                    matrix.set(seqName1, seqName2, 0.0);
+                } else {
+                    var diff:Int = 0;
+                    var count:Int = 0;
+                    var l1:Int = seq1.length();
+                    var l2:Int = seq2.length();
+                    var len:Int = (l1 > l2) ? l2 : l1;
+                    for (i in 0...len) {
+                        var c1:String = seq1.charAt(i);
+                        var c2:String = seq2.charAt(i);
+                        if (isATCG(c1) && isATCG(c2)) {
+                            if (c1 != c2) {
+                                diff++;
+                            }
+                            count++;
+                        }
+                    }
+                    var val:Float = (count == 0) ? 1.0 : diff / count;
+                    matrix.set(seqName1, seqName2, val);
+                    matrix.set(seqName2, seqName1, val);
+                }
+                j++;
+            }
+            i++;
+        }
+        return matrix;
+    }
+    
+    public function toDistanceMatrixUsingGlobalDeletion(lst:List<Sequence>):StringMatrix {
+        var listAllowed:List<String> = new List<String>();
+        listAllowed.add("A");
+        listAllowed.add("C");
+        listAllowed.add("T");
+        listAllowed.add("G");
+        var lCopy:List<Sequence> = escapePositionsInSequencesExcept(lst, listAllowed);
+        return toDistanceMatrixUsingPairwiseComparison(lCopy);
     }
     
     public function containsASequenceWithAnEmptyName(lst:List<Sequence>):Bool {
@@ -154,15 +215,20 @@ class SequenceListAnalyzer
     
     public static function main() {
         var analyzer:SequenceListAnalyzer = new SequenceListAnalyzer();
-        var s1:Sequence = new Sequence("A", "AATGGTA--ACTGAG?TA");
-        var s2:Sequence = new Sequence("B", "AT-GGTA--ACTGAGCTA");
-        var s3:Sequence = new Sequence("B", "AT-GGTA--ACTGC-CTA");
-        var s4:Sequence = new Sequence("C", "AT-GGTA--ACTGC-CTA");
+        var s1:Sequence = new Sequence("A", "A-AAAAAAAAAAAAAAAA");
+        var s2:Sequence = new Sequence("B", "AAAAAAAAAAAAAAAAAT");
+        var s3:Sequence = new Sequence("C", "AT-GGTA--ACTGC-CTA");
+        var s4:Sequence = new Sequence("D", "AT-GGTA--ACTGC-CTA");
         var l:List<Sequence> = new List<Sequence>();
         l.add(s1);
         l.add(s2);
         l.add(s3);
         l.add(s4);
+        var m:StringMatrix = analyzer.toDistanceMatrixUsingPairwiseComparison(l);
+        trace(m.toString());
+        var m:StringMatrix = analyzer.toDistanceMatrixUsingGlobalDeletion(l);
+        trace(m.toString());
+        /*
         var allowedChar:List<String> = new List<String>();
         allowedChar.add("A");
         allowedChar.add("C");
@@ -181,5 +247,6 @@ class SequenceListAnalyzer
         for (e in r) {
             trace(e);
         }
+        */
     }
 }
