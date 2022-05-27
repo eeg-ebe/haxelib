@@ -65,6 +65,15 @@ class CommandlineParser
         if (mArguments.exists(name)) {
             throw "Argument " + name + " is already in list!";
         }
+        for (arg in args) {
+            for (oArg in mArguments) {
+                for (argSpec in oArg.getArgs()) {
+                    if (arg == argSpec) {
+                        throw "Argument " +  arg + " already used!";
+                    }
+                }
+            }
+        }
         var arg:CommandlineParserArgument = new CommandlineParserArgument(name, args, type, def, required, help);
         mArguments.set(name, arg);
     }
