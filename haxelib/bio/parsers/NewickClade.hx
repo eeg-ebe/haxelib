@@ -74,6 +74,24 @@ class NewickClade
         return result.join("");
     }
     
+    /**
+     * Get the names of all leafs.
+     */
+    public function getLeafNames():List<String> {
+        var result:List<String> = new List<String>();
+        if (subClades == null || subClades.isEmpty()) {
+            result.add(name);
+        } else {
+            for (clade in subClades) {
+                var names:List<String> = clade.getLeafNames();
+                for (name in names) {
+                    result.add(name);
+                }
+            }
+        }
+        return result;
+    }
+    
     public static function main() {
         var n1 = new NewickClade("A", "0.7:0.3");
         var n2 = new NewickClade("B", "0.9:0.4");
