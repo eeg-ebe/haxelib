@@ -43,6 +43,43 @@ class NewickClade
     public function new(?myName:String, ?myExtraInformation:String, ?mySubClades:List<NewickClade>) {
         name = myName;
         extraInformation = myExtraInformation;
-        subClades = mySubClades;
+        if (mySubClades != null) {
+            subClades = mySubClades;
+        }
+    }
+    
+    /**
+     * Create a textual representation of this clade.
+     */
+    public function toString():String {
+        var result:List<String> = new List<String>();
+        if (subClades != null && !subClades.isEmpty()) {
+            result.add("(");
+            var subCladeString:List<String> = new List<String>();
+            for (subClade in subClades) {
+                var s:String = subClade.toString();
+                subCladeString.add(s);
+            }
+            var s:String = subCladeString.join(",");
+            result.add(s);
+            result.add(")");
+        }
+        if (name != null && name != "") {
+            result.add(name);
+        }
+        if (extraInformation != null && extraInformation != "") {
+            result.add(":");
+            result.add(extraInformation);
+        }
+        return result.join("");
+    }
+    
+    public static function main() {
+        var n1 = new NewickClade("A", "0.7:0.3");
+        var n2 = new NewickClade("B", "0.9:0.4");
+        var n3 = new NewickClade("C", "0.8:0.1");
+        n1.subClades.add(n2);
+        n1.subClades.add(n3);
+        trace(n1.toString());
     }
 }
