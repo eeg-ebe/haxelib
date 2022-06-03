@@ -63,6 +63,20 @@ class StringGraph<E>
     }
     
     /**
+     * Add a new node.
+     */
+    public inline function addNextNode():String {
+        var i:Int = 0;
+        var name:String = "n" + i;
+        while (hasNode(name)) {
+            i++;
+            name = "n" + i;
+        }
+        addNode(name);
+        return name;
+    }
+    
+    /**
      * Remove a particular node from this graph.
      */
     public inline function removeNode(s:String):Bool {
@@ -302,6 +316,11 @@ class StringGraph<E>
         graph.addEdge("a", "e", "val");
         assert(4, graph.getConnectedNodes("a").length);
         assert(4, graph.getConnectedNodesWithValues("a").length);
+        // addNextNode
+        var size:Int = graph.getNodes().length;
+        graph.addNextNode();
+        var nextSize:Int = graph.getNodes().length;
+        assert(size+1, nextSize);
     }
     private static function assert(expected:Dynamic, got:Dynamic) {
         if (expected != got) {
