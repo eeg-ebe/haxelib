@@ -23,18 +23,18 @@ import haxe.ds.Vector;
  *
  * @author Yann Spoeri
  */
-class StringGraph
+class StringGraph<E>
 {
     /**
      * The nodes this graph consists of.
      */
-    private var mNodes:StringMap<GraphNode<String,String>>;
+    private var mNodes:StringMap<GraphNode<String,E>>;
     
     /**
      * Init the graph.
      */
     public function new(nodeInfo:Vector<String>=null) {
-        mNodes = new StringMap<GraphNode<String,String>>();
+        mNodes = new StringMap<GraphNode<String,E>>();
         if (nodeInfo != null) {
             for (node in nodeInfo) {
                 addNode(node);
@@ -55,7 +55,7 @@ class StringGraph
     public inline function addNode(s:String):Bool {
         var result:Bool = false;
         if (!hasNode(s)) {
-            var gn:GraphNode<String,String> = new GraphNode<String,String>(s);
+            var gn:GraphNode<String,E> = new GraphNode<String,E>(s);
             mNodes.set(s, gn);
             result = true;
         }
@@ -68,7 +68,7 @@ class StringGraph
     public inline function removeNode(s:String):Bool {
         var result:Bool = false;
         if (hasNode(s)) {
-            var gn:GraphNode<String,String> = mNodes.get(s);
+            var gn:GraphNode<String,E> = mNodes.get(s);
             gn.removeAllConnections();
             mNodes.remove(s);
             result = true;
@@ -107,8 +107,8 @@ class StringGraph
         var result:Bool = false;
         if (hasNode(v1)) {
             if (hasNode(v2)) {
-                var g1:GraphNode<String,String> = mNodes.get(v1);
-                var g2:GraphNode<String,String> = mNodes.get(v2);
+                var g1:GraphNode<String,E> = mNodes.get(v1);
+                var g2:GraphNode<String,E> = mNodes.get(v2);
                 if (g1.isConnectedTo(g2)) {
                     result = true;
                 }
@@ -123,13 +123,13 @@ class StringGraph
      * graph or whether the value of the edge is null, use the hasEdge function of this
      * graph object.
      */
-    public inline function getEdge(v1:String, v2:String):String {
-        var result:String = null;
+    public inline function getEdge(v1:String, v2:String):E {
+        var result:E = null;
         if (hasNode(v1)) {
             if (hasNode(v2)) {
-                var g1:GraphNode<String,String> = mNodes.get(v1);
-                var g2:GraphNode<String,String> = mNodes.get(v2);
-                var connection:GraphEdge<String,String> = g1.getConnectionTo(g2);
+                var g1:GraphNode<String,E> = mNodes.get(v1);
+                var g2:GraphNode<String,E> = mNodes.get(v2);
+                var connection:GraphEdge<String,E> = g1.getConnectionTo(g2);
                 result = connection.getInfoElement();
             }
         }
@@ -139,11 +139,11 @@ class StringGraph
     /**
      * Add an edge to this StringGraph.
      */
-    public inline function addEdge(v1:String, v2:String, val:String):Void {
+    public inline function addEdge(v1:String, v2:String, val:E):Void {
         addNode(v1);
         addNode(v2);
-        var g1:GraphNode<String,String> = mNodes.get(v1);
-        var g2:GraphNode<String,String> = mNodes.get(v2);
+        var g1:GraphNode<String,E> = mNodes.get(v1);
+        var g2:GraphNode<String,E> = mNodes.get(v2);
         g1.connectTo(g2, val);
     }
     
@@ -154,8 +154,8 @@ class StringGraph
         var result:Bool = false;
         if (hasNode(v1)) {
             if (hasNode(v2)) {
-                var g1:GraphNode<String,String> = mNodes.get(v1);
-                var g2:GraphNode<String,String> = mNodes.get(v2);
+                var g1:GraphNode<String,E> = mNodes.get(v1);
+                var g2:GraphNode<String,E> = mNodes.get(v2);
                 result = g1.removeConnection(g2);
             }
         }
@@ -168,7 +168,7 @@ class StringGraph
     public inline function getConnectedNodes(s:String):List<String> {
         var result:List<String> = new List<String>();
         if (hasNode(s)) {
-            var g:GraphNode<String,String> = mNodes.get(s);
+            var g:GraphNode<String,E> = mNodes.get(s);
             for (gn in g.getConnectedNodes()) {
                 result.add(gn.getInfoElement());
             }
@@ -179,14 +179,14 @@ class StringGraph
     /**
      * Get connected nodes with values.
      */
-    public inline function getConnectedNodesWithValues(s:String):List<{node:String, val:String}> {
-        var result:List<{node:String, val:String}> = new List<{node:String, val:String}>();
+    public inline function getConnectedNodesWithValues(s:String):List<{node:String, val:E}> {
+        var result:List<{node:String, val:E}> = new List<{node:String, val:E}>();
         if (hasNode(s)) {
-            var g:GraphNode<String,String> = mNodes.get(s);
+            var g:GraphNode<String,E> = mNodes.get(s);
             for (connection in g) {
-                var otherNode:GraphNode<String,String> = connection.getOtherNode(g);
+                var otherNode:GraphNode<String,E> = connection.getOtherNode(g);
                 var otherNodeName:String = otherNode.getInfoElement();
-                var val:String = connection.getInfoElement();
+                var val:E = connection.getInfoElement();
                 var ele = {
                     node: otherNodeName,
                     val: val
@@ -221,7 +221,7 @@ class StringGraph
                     continue;
                 }
                 var nodeInt2:Int = map.get(otherNode);
-                var val:String = con.val;
+                var val:E = con.val;
                 result.add("  " + nodeInt + " -- " + nodeInt2 + " [label=\"" + val + "\"];");
             }
             seen.set(node, true);
@@ -231,7 +231,7 @@ class StringGraph
     }
     
     public static function main() {
-        var graph:StringGraph = new StringGraph();
+        var graph:StringGraph<String> = new StringGraph<String>();
         // hasNode
         assert(false, graph.hasNode("a"));
         graph.addNode("a");
