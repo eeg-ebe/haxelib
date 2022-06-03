@@ -89,6 +89,18 @@ class GraphNode<V,E>
     }
     
     /**
+     * Remove all connections.
+     */
+    public inline function removeAllConnections() {
+        while (!mEdges.isEmpty()) {
+            var toRemove = mEdges.pop();
+            var other:GraphNode<V,E> = toRemove.getOtherNode(this);
+            mEdges.remove(toRemove);
+            other.mEdges.remove(toRemove);
+        }
+    }
+    
+    /**
      * Remove a particular connection.
      */
     public inline function removeConnection(other:GraphNode<V,E>):Bool {
