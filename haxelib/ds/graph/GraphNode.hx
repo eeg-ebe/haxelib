@@ -79,8 +79,13 @@ class GraphNode<V,E>
      * Connect this graph node to another graph node.
      */
     public inline function connectTo(other:GraphNode<V,E>, e:E):Bool {
-        if (isConnectedTo(other)) {
-            return false;
+        var edge:GraphEdge<V,E> = getConnectionTo(other);
+        if (edge != null) {
+            if (edge.getInfoElement() == e) {
+                return false;
+            }
+            edge.setInfoElement(e);
+            return true;
         }
         var edge:GraphEdge<V,E> = new GraphEdge<V,E>(this, other, e);
         mEdges.add(edge);
@@ -93,7 +98,7 @@ class GraphNode<V,E>
      */
     public inline function removeAllConnections() {
         while (!mEdges.isEmpty()) {
-            var toRemove = mEdges.pop();
+            var toRemove:GraphEdge<V,E> = mEdges.first();
             var other:GraphNode<V,E> = toRemove.getOtherNode(this);
             mEdges.remove(toRemove);
             other.mEdges.remove(toRemove);

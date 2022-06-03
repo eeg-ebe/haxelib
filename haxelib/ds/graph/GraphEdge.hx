@@ -41,8 +41,8 @@ class GraphEdge<V,E>
      * Create a new GraphEdge object.
      */
     public function new(node1:GraphNode<V,E>, node2:GraphNode<V,E>, info:E) {
-        node1 = mNode1;
-        node2 = mNode2;
+        mNode1 = node1;
+        mNode2 = node2;
         setInfoElement(info);
     }
     
@@ -91,8 +91,15 @@ class GraphEdge<V,E>
         } else if (n == mNode2) {
             result = mNode1;
         } else {
-            throw "Node " + n + " not connected to this edge!";
+            throw "Node " + n + " not connected to this edge, but " + mNode1 + " -- " + mNode2 + "!";
         }
         return result;
+    }
+    
+    /**
+     * Get a textual representation of this edge.
+     */
+    public function toString() {
+        return "  " + mNode1 + " -- " + mNode2 + " (" + mInfo + ")";
     }
 }
