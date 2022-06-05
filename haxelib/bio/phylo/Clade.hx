@@ -75,6 +75,7 @@ class Clade
         setColor(color);
         mOutput = new List<String>();
         mConnectedInfo = new StringMap<Dynamic>();
+        mChilds = new List<Clade>();
     }
     
     /**
