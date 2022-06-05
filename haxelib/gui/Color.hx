@@ -340,7 +340,8 @@ class Color
      */
     public function equals(o:Dynamic):Bool {
         var result:Bool = false;
-        if(Std.is(o, Color)) {
+        //if(Std.is(o, Color)) {
+        if (Std.isOfType(o, Color)) {
             var oColor:Color = cast o;
             result = (oColor.mAlpha == mAlpha) &&
                     (oColor.mRed == mRed) &&
