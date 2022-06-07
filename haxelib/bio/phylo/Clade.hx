@@ -171,6 +171,20 @@ class Clade
     }
     
     /**
+     * Remove additional information to this clade.
+     */
+    public function removeInfo(info:String):Void {
+        mConnectedInfo.remove(info);
+    }
+    
+    /**
+     * Check whether a particular info is connected to this clade.
+     */
+    public function checkInfo(info:String):Bool {
+        return mConnectedInfo.exists(info);
+    }
+    
+    /**
      * Get the parental clade.
      */
     public function getParent():Clade {
