@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package haxelib.bio.evolution;
+package haxelib.bio.phylo;
 
 import haxelib.math.Combinatorics;
 import haxelib.math.Fractional;
