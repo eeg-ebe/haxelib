@@ -269,7 +269,11 @@ class Color
      * @param red   The new red value.
      */
     public inline function setRed(red:Int):Void {
+        #if static
+        if(red < 0 || red > 255) {
+        #else
         if(red == null || red < 0 || red > 255) {
+        #end
             throw "Red value must be between 0 and 255 (inclusive), not " + red;
         }
         mRed = red;
@@ -281,7 +285,11 @@ class Color
      * @param green The new green value.
      */
     public inline function setGreen(green:Int):Void {
+        #if static
+        if(green < 0 || green > 255) {
+        #else
         if(green == null || green < 0 || green > 255) {
+        #end
             throw "Green value must be between 0 and 255 (inclusive), not " + green;
         }
         mGreen = green;
@@ -293,7 +301,11 @@ class Color
      * @param blue  The new blue value.
      */
     public inline function setBlue(blue:Int):Void {
+        #if static
+        if(blue < 0 || blue > 255) {
+        #else
         if(blue == null || blue < 0 || blue > 255) {
+        #end
             throw "Blue value must be between 0 and 255 (inclusive), not " + blue;
         }
         mBlue = blue;
@@ -305,6 +317,12 @@ class Color
      * @param alpha The new alpha value.
      */
     public inline function setAlpha(alpha:Int):Void {
+        #if static
+        if(alpha < 0 || alpha > 100) {
+            throw "Alpha value must be between 0 and 100 (inclusive), not " + alpha;
+        }
+        mAlpha = alpha;
+        #else
         if(alpha == null) {
             mAlpha = 100;
         } else {
@@ -313,6 +331,7 @@ class Color
             }
             mAlpha = alpha;
         }
+        #end
     }
 
     /**
