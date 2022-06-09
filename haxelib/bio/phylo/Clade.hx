@@ -230,5 +230,55 @@ class Clade
         return mChilds.length;
     }
     
+    /**
+     * Get all leaf names of this clade.
+     */
+    public function getLeafNames():List<String> {
+        var result:List<String> = new List<String>();
+        getLeafNames_(result);
+        return result;
+    }
+    private function getLeafNames_(result:List<String>):Void {
+        if ( isLeaf() ) {
+            result.add(getName());
+        }
+        for (child in this) {
+            child.getLeafNames_(result);
+        } 
+    }
+    
+    /**
+     * Get a newick representation of this clade.
+     */
+    public function toNewickString(?addNames:Bool=true,?addDistance:Bool=true,?addBootstrap:Bool=true):String {
+        var result:List<String> = new List<String>();
+        toNewickString_(result, addNames, addDistance, addBootstrap);
+        result.add(";");
+        return result.join("");
+    }
+    private function toNewickString_(result:List<String>, addNames:Bool, addDistance:Bool, addBootstrap:Bool):Void {
+        if (! isLeaf()) {
+            result.add("(");
+            var first:Bool = true;
+            for (child in this) {
+                if (!first) {
+                    result.add(",");
+                }
+                first = false;
+                child.toNewickString_(result, addNames, addDistance, addBootstrap);
+            }
+            result.add(")");
+        }
+        if (addNames) {
+            result.add(getName());
+        }
+        if (addDistance) {
+            result.add(":" + getDistance());
+            if (addBootstrap) {
+                result.add(":" + getBootstrapValue());
+            }
+        }
+    }
+    
     public static function main() {}
 }
