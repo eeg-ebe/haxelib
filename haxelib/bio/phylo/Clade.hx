@@ -311,7 +311,10 @@ class Clade
             result.add(")");
         }
         if (addNames) {
-            result.add(getName());
+            var name:String = getName();
+            if (name != null && name != "") {
+                result.add(name);
+            }
         }
         if (addDistance) {
             result.add(":" + getDistance());
