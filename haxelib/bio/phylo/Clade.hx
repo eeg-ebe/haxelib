@@ -164,7 +164,7 @@ class Clade
     }
     
     /**
-     * Strore additional information to this clade.
+     * Store additional information to this clade.
      */
     public function setInfo(info:String, val:Dynamic):Void {
         mConnectedInfo.set(info, val);
@@ -182,6 +182,13 @@ class Clade
      */
     public function checkInfo(info:String):Bool {
         return mConnectedInfo.exists(info);
+    }
+    
+    /**
+     * The same as checkInfo.
+     */
+    public inline function hasInfo(info:String):Bool {
+        return checkInfo(info);
     }
     
     /**
@@ -210,10 +217,10 @@ class Clade
     }
     
     /**
-     * Check whether this is a root clade.
+     * Count the number of child clades.
      */
-    public function isRoot():Bool {
-        return mParent == null;
+    public function countChilds():Int {
+        return mChilds.length;
     }
     
     /**
@@ -224,10 +231,20 @@ class Clade
     }
     
     /**
-     * Count the number of child clades.
+     * Get all leaf clade objects.
      */
-    public function countChilds():Int {
-        return mChilds.length;
+    public function getLeafs():List<Clade> {
+        var result:List<Clade> = new List<Clade>();
+        getLeafs_(result);
+        return result;
+    }
+    private function getLeafs_(result:List<Clade>):Void {
+        if ( isLeaf() ) {
+            result.add(this);
+        }
+        for (child in this) {
+            child.getLeafs_(result);
+        } 
     }
     
     /**
@@ -245,6 +262,30 @@ class Clade
         for (child in this) {
             child.getLeafNames_(result);
         } 
+    }
+    
+    /**
+     * Check whether this is a root clade.
+     */
+    public function isRoot():Bool {
+        return mParent == null;
+    }
+    
+    /**
+     * Get the root of this clade system.
+     */
+    public function getRoot():Clade {
+        if (isRoot()) {
+            return this;
+        }
+        return getParent().getRoot();
+    }
+    
+    /**
+     * Get the root name of this system.
+     */
+    public function getRootName():String {
+        return getRoot().getName();
     }
     
     /**
