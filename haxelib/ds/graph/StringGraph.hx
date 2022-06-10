@@ -137,7 +137,7 @@ class StringGraph<E>
      * graph or whether the value of the edge is null, use the hasEdge function of this
      * graph object.
      */
-    public inline function getEdge(v1:String, v2:String):E {
+    public inline function getEdge(v1:String, v2:String):Null<E> {
         var result:E = null;
         if (hasNode(v1)) {
             if (hasNode(v2)) {
