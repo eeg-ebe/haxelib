@@ -280,5 +280,27 @@ class Clade
         }
     }
     
+    /**
+     * Get a dot representation of this clade.
+     */
+    public function toDotString():String {
+        var result:List<String> = new List<String>();
+        result.add("graph {\n");
+        toDotString_(result);
+        result.add("}");
+        return result.join("");
+    }
+    private function toDotString_(result:List<String>, ?lastNodeName:String=null, ?childIdx:Int=0):Void {
+        var currentNodeName:String = (lastNodeName == null) ? "n" + childIdx : lastNodeName + "_" + childIdx;
+        result.add("  " + currentNodeName + " [label=\"" + getName() + "\"];\n");
+        if (lastNodeName != null) {
+            result.add("  " + currentNodeName + " -- " + lastNodeName + "\n");
+        }
+        var i:Int = 0;
+        for (child in this) {
+            child.toDotString_(result, currentNodeName, i++);
+        }
+    }
+    
     public static function main() {}
 }
