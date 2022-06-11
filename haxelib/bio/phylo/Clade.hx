@@ -319,7 +319,7 @@ class Clade
         if (addDistance) {
             result.add(":" + getDistance());
             if (addBootstrap) {
-                result.add("[" + getBootstrapValue() + "]");
+                result.add("[" + (getBootstrapValue() * 100) + "]");
             }
         }
     }
