@@ -68,7 +68,7 @@ class Clade
     /**
      * Create a new Clade.
      */
-    public function new(?name:String=null, ?dist:Float=1, ?bootstrap:Float=1, ?color:Color=null) {
+    public function new(?name:String=null, ?dist:Float=0, ?bootstrap:Float=1, ?color:Color=null) {
         setName(name);
         setDistance(dist);
         setBootstrapValue(bootstrap);
