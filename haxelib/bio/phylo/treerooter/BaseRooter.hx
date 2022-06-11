@@ -19,7 +19,7 @@ import haxelib.bio.phylo.Clade;
 import haxelib.ds.graph.StringGraph;
 
 /**
- * Base class for all tree routers.
+ * Base class for all tree rooters.
  *
  * @author Yann Spoeri
  */
