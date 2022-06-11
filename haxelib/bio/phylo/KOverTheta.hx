@@ -38,6 +38,11 @@ class KOverTheta
     private var mDecisionThreshold:Float = 0;
     
     /**
+     * Only monophyletic species
+     */
+    private var mMonopyhleticOnly:Bool = false;
+    
+    /**
      * Create a new KOverTheta object.
      */
     public function new() {
@@ -59,6 +64,13 @@ class KOverTheta
      */
     public function setDecisionThreshold(threshold:Float) {
         mDecisionThreshold = threshold;
+    }
+    
+    /**
+     * Set whether all delimited species should be monophyletic.
+     */
+    public function setDelimitedSpeciesMonophyletic(val:Bool):Void {
+        mMonopyhleticOnly = val;
     }
     
     /**
@@ -193,13 +205,27 @@ class KOverTheta
             var shortestLength:Float = firstShortestLength + clade.getDistance();
             var other:List<StringSet> = new List<StringSet>();
             if (same) {
-                shortest = new StringSet();
-                for (childCladeResult in childCladeResults) {
-                    for (s in childCladeResult.shortest) {
-                        shortest.add(s);
+                if (mMonopyhleticOnly) {
+                    shortest = new StringSet();
+                    for (childCladeResult in childCladeResults) {
+                        for (s in childCladeResult.shortest) {
+                            shortest.add(s);
+                        }
+                        for (o in childCladeResult.other) {
+                            for (e in o) {
+                                shortest.add(e);
+                            }
+                        }
                     }
-                    for (o in childCladeResult.other) {
-                        other.add(o);
+                } else {
+                    shortest = new StringSet();
+                    for (childCladeResult in childCladeResults) {
+                        for (s in childCladeResult.shortest) {
+                            shortest.add(s);
+                        }
+                        for (o in childCladeResult.other) {
+                            other.add(o);
+                        }
                     }
                 }
             } else {
