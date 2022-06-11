@@ -35,6 +35,7 @@ class CladePlotter
     private var mTextPrintMarginX:Int = System.getIntProperty("CladePlotter.textPrintMarginX", 5);
     private var mTextPrintMarginY:Int = System.getIntProperty("CladePlotter.textPrintMarginY", 5);
     private var mTextFontName:String = System.getProperty("CladePlotter.textFontName", "Courier New");
+    private var mTextUseCladeColorAsTextColor:Bool = System.getBoolProperty("CladePlotter.useCladeColorAsTextColor", false);
     private var mLineWidth:Int = System.getIntProperty("CladePlotter.lineWidth", 1);
     private var mPrintName:Bool = System.getBoolProperty("CladePlotter.printName", true);
     private var mPrintOutput:Bool = System.getBoolProperty("CladePlotter.printOutput", true);
@@ -81,12 +82,14 @@ class CladePlotter
         var h:Float = 0;
         var midPoint:Float = 0;
         var name:String = c.getName();
-        var nameSize:{ w:Float, h:Float, midPoint:Float } = paintText(result, x, y, name, mNameTextSize, mNameTextColor);
+        var color1:String = (mTextUseCladeColorAsTextColor) ? c.getColor().toString() : mNameTextColor;
+        var nameSize:{ w:Float, h:Float, midPoint:Float } = paintText(result, x, y, name, mNameTextSize, color1);
         w += nameSize.w;
         h += nameSize.h;
         midPoint = nameSize.midPoint;
         var output:String = c.getOutput();
-        var outputSize:{ w:Float, h:Float, midPoint:Float } = paintText(result, x, y + h, output, mOutputTextSize, mOutputTextColor);
+        var color2:String = (mTextUseCladeColorAsTextColor) ? c.getColor().toString() : mNameTextColor;
+        var outputSize:{ w:Float, h:Float, midPoint:Float } = paintText(result, x, y + h, output, mOutputTextSize, color2);
         w += outputSize.w;
         h += outputSize.h;
         return { w: w, h: h, midPoint: midPoint };
