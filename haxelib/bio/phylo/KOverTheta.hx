@@ -18,6 +18,8 @@ package haxelib.bio.phylo;
 import haxe.ds.Vector;
 import haxelib.ds.set.StringSet;
 import haxelib.iterators.EnumerateIterator;
+import haxelib.system.System;
+import haxelib.util.Misc;
 import haxelib.util.StringMatrix;
 
 /**
@@ -27,6 +29,15 @@ import haxelib.util.StringMatrix;
  */
 class KOverTheta
 {
+    /**
+     * Plotting settings.
+     */
+    private var mAddSets:Bool = System.getBoolProperty("KOverTheta.addSets", false);
+    private var mAddK:Bool = System.getBoolProperty("KOverTheta.addK", false);
+    private var mAddTheta:Bool = System.getBoolProperty("KOverTheta.addK", false);
+    private var mAddFinalValue:Bool = System.getBoolProperty("KOverTheta.addKoTheta", true);
+    private var mPrecision:Int = System.getIntProperty("KOverTheta.precision", 3);
+    
     /**
      * The decision rule to take. Currently (0) Rosenberg and (1) 4-times-rule are implemented.
      */
@@ -116,10 +127,19 @@ class KOverTheta
     /**
      * Return if two set of sequences belong to the same species (or not).
      */
-    public function belongToSameSpecies(c1:StringSet, c2:StringSet, distanceMatrix:StringMatrix, sequenceLength:Int):Bool {
+    public function belongToSameSpecies(clade:Clade, c1:StringSet, c2:StringSet, distanceMatrix:StringMatrix, sequenceLength:Int):Bool {
+        if (clade != null && mAddSets) {
+            clade.addOutput(c1.toString() + " <-> " + c2.toString());
+        }
         var k:Float = calcK(c1, c2, distanceMatrix, sequenceLength);
+        if (clade != null && mAddK) {
+            clade.addOutput("k=" + Misc.floatToStringPrecision(k, mPrecision));
+        }
         var theta1:Float = calcTheta(c1, distanceMatrix, sequenceLength);
         var theta2:Float = calcTheta(c2, distanceMatrix, sequenceLength);
+        if (clade != null && mAddTheta) {
+            clade.addOutput("theta1=" + Misc.floatToStringPrecision(theta1, mPrecision) + ", theta2=" + Misc.floatToStringPrecision(theta2, mPrecision));
+        }
         
         if (theta1 == -1 || theta2 == -1) {
             return true;
@@ -134,10 +154,16 @@ class KOverTheta
             var kDivTheta1:Float = k / theta1;
             var kDivTheta2:Float = k / theta2;
             var p:Float = Rosenberg.calcRosenberg(kDivTheta1, kDivTheta2, BigInt.fromInt(n1), BigInt.fromInt(n2));
+            if (clade != null && mAddFinalValue) {
+                clade.addOutput("p=" + Misc.floatToStringPrecision(p, mPrecision));
+            }
             return p <= mDecisionThreshold;
         } else if (mDecisionRule == 1) {
             var theta:Float = (theta1 > theta2) ? theta1 : theta2;
             var ratio:Float = k / theta;
+            if (clade != null && mAddFinalValue) {
+                clade.addOutput("k/T=" + Misc.floatToStringPrecision(ratio, mPrecision));
+            }
             return ratio <= mDecisionThreshold;
         } else {
             throw "Unknown rule " + mDecisionRule + "!";
@@ -198,7 +224,7 @@ class KOverTheta
             }
             
             // compare the two shortest connections
-            var same:Bool = belongToSameSpecies(firstShortest, secondShortest, distanceMatrix, sequenceLength);
+            var same:Bool = belongToSameSpecies(clade, firstShortest, secondShortest, distanceMatrix, sequenceLength);
             
             // calculate the result of this clade
             var shortest:StringSet = null;
