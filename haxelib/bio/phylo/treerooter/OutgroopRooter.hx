@@ -23,7 +23,7 @@ import haxelib.ds.graph.StringGraph;
  *
  * @author Yann Spoeri
  */
-class OutgroopRooter
+class OutgroopRooter extends BaseRooter
 {
     /**
      * The name of the outgroop.
@@ -54,5 +54,15 @@ class OutgroopRooter
         };
     }
     
-    public static function main() {}
+    public static function main() {
+        var graph:StringGraph<Float> = new StringGraph<Float>();
+        graph.addEdge("A", "X", 3);
+        graph.addEdge("B", "X", 2);
+        graph.addEdge("X", "Y", 5);
+        graph.addEdge("Y", "C", 8);
+        graph.addEdge("Y", "D", 1);
+        var rooter:OutgroopRooter = new OutgroopRooter("A");
+        var c:Clade = rooter.root(graph);
+        trace(c.toDotString());
+    }
 }
