@@ -15,6 +15,8 @@
  */
 package haxelib.bio.parsers;
 
+import haxelib.bio.phylo.Clade;
+
 /**
  * A parser for the newick format.
  * See https://evolution.genetics.washington.edu/phylip/newick_doc.html for more
@@ -33,10 +35,10 @@ class NewickParser
     /**
      * Read a Newick string.
      */
-    private static function read_(s:String, begin:Int, stop:Int):NewickClade {
+    private static function read_(s:String, begin:Int, stop:Int):Clade {
         if (begin >= stop) {
             // empty name
-            var result:NewickClade = new NewickClade("", "");
+            var result:Clade = new Clade();
             return result;
         }
         // spaces handling
@@ -51,7 +53,7 @@ class NewickParser
         }
         // braces
         if (s.charAt(begin) == "(") {
-            var subChilds:List<NewickClade> = new List<NewickClade>();
+            var subChilds:List<Clade> = new List<Clade>();
             var braceCounter:Int = 0;
             var braceStop:Int = stop;
             var lastBegin = begin + 1;
@@ -63,7 +65,7 @@ class NewickParser
                     braceCounter--;
                 }
                 if (ch == "," && braceCounter == 1) {
-                    var subClade:NewickClade = read_(s, lastBegin, i);
+                    var subClade:Clade = read_(s, lastBegin, i);
                     subChilds.add(subClade);
                     lastBegin = i + 1;
                 }
@@ -72,35 +74,66 @@ class NewickParser
                     break;
                 }
             }
-            var lastSubClade:NewickClade = read_(s, lastBegin, braceStop);
+            var lastSubClade:Clade = read_(s, lastBegin, braceStop);
             subChilds.add(lastSubClade);
-            var result:NewickClade = read_(s, braceStop + 1, stop);
-            if (result.subClades == null) {
-                result.subClades = new List<NewickClade>();
-            }
+            var result:Clade = read_(s, braceStop + 1, stop);
             for (child in subChilds) {
-                result.subClades.add(child);
+                result.addChild(child);
             }
             return result;
         }
         // parse rest/name
         var partsString:String = s.substring(begin, stop);
-        var part1Idx:Int = partsString.indexOf(":");
-        var name:String = (part1Idx == -1) ? partsString : partsString.substring(0, part1Idx);
-        var extra:String = (part1Idx == -1) ? null : partsString.substring(part1Idx + 1);
-        var result:NewickClade = new NewickClade(name, extra);
+        var result:Clade = createCladeByStr(partsString);
         return result;
+    }
+    
+    /**
+     * Create a clade object by a string.
+     */
+    private static function createCladeByStr(s:String):Clade {
+        // most easy case, no ":" given => only name
+        if (s.indexOf(":") == -1) {
+            return new Clade(s);
+        }
+        // split by ":"
+        var arr:Array<String> = s.split(":");
+        if (arr.length != 2) {
+            throw "Unknown Newick format. More than one ':' given in string '" + s + "'";
+        }
+        var first:String = arr[0];
+        var second:String = arr[1];
+        // check if first can be interpreted as bootstrap value (.DND Clustal newick format)
+        var firstAsFloat:Float = Std.parseFloat(first);
+        var secondAsFloat:Float = Std.parseFloat(second);
+        if (!Math.isNaN(firstAsFloat) && 0.0 <= firstAsFloat && firstAsFloat <= 100.0 && !Math.isNaN(secondAsFloat) && 0 <= secondAsFloat) {
+            // .DND Clustal newick format. Bootstrap values will be written instead of name
+            return new Clade("", secondAsFloat, firstAsFloat / 100);
+        }
+        if (second.indexOf("[") != -1 && StringTools.endsWith(second, "]")) {
+            // .PHB Clustal newick format
+            var parts:Array<String> = second.split("[");
+            var distance:Float = Std.parseFloat(parts[0]);
+            var bootstrap:Float = Std.parseFloat(parts[1].substring(0, parts[1].length - 1));
+            if (!Math.isNaN(distance) && !Math.isNaN(bootstrap) && 0 <= distance && 0.0 <= bootstrap && bootstrap <= 100.0) {
+                return new Clade(first, distance, bootstrap / 100);
+            }
+        }
+        if (!Math.isNaN(secondAsFloat) && 0 <= secondAsFloat) {
+            return new Clade(first, secondAsFloat);
+        }
+        throw "Unknown newick format! Unable to interprete '" + s + "'!";
     }
     
     /**
      * Read a Newick string.
      */
-    public function read(s:String):NewickClade {
+    public function read(s:String):Clade {
         if (s == null) {
             throw "String to parse must not be null!";
         }
         if (s == "") {
-            var result:NewickClade = new NewickClade("", "");
+            var result:Clade = new Clade();
             return result;
         }
         var braceCounter:Int = 0;
@@ -120,8 +153,8 @@ class NewickParser
     
     public static function main() {
         var parser:NewickParser = new NewickParser();
-        var tree:NewickClade = parser.read("(B:0.2,(C:0.3,D:0.4)E:0.5,(G,H))F:0.1:0.3:1;");
-        var treeAsString:String = tree.toString();
+        var tree:Clade = parser.read("(B:0.2,(C:0.3,D:0.4)E:0.5,(G,H))F:0.1:0.3:1;");
+        var treeAsString:String = tree.toNewickString();
         trace(treeAsString);
     }
 }
