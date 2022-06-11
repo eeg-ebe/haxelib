@@ -19,11 +19,11 @@ import haxelib.bio.phylo.Clade;
 import haxelib.ds.graph.StringGraph;
 
 /**
- * An outgroop router.
+ * An outgroop rooter.
  *
  * @author Yann Spoeri
  */
-class OutgroopRouter
+class OutgroopRooter
 {
     /**
      * The name of the outgroop.
