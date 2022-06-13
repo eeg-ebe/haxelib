@@ -70,7 +70,7 @@ class CladePlotter
             var escapedText = StringTools.htmlEscape(line, true);
             h += size;
             var my:Float = y + h;
-            result.add("<text x='" + mx + "' y='" + my + "' font-size='" + size + "' fill='" + color + "'>" + escapedText + "</text>");
+            result.push("<text x='" + mx + "' y='" + my + "' font-size='" + size + "' fill='" + color + "'>" + escapedText + "</text>");
         }
         h += mTextPrintMarginY;
         return { w: w, h: h, midPoint: y + mTextPrintMarginY + size / 2 };
@@ -109,7 +109,7 @@ class CladePlotter
             var textOutputStartY = y + mDistSubCladeAndSubClade;
             var textOutputSize:{ w:Float, h:Float, midPoint:Float } = paintTextOfClade(result, c, textOutputStartX, textOutputStartY);
             
-            result.add("<line x1='" + x + "' y1='" + textOutputSize.midPoint + "' x2='" + textOutputStartX + "' y2='" + textOutputSize.midPoint + "' title='" + distance + "' style='stroke:" + color + "'/>");
+            result.push("<line x1='" + x + "' y1='" + textOutputSize.midPoint + "' x2='" + textOutputStartX + "' y2='" + textOutputSize.midPoint + "' title='" + distance + "' style='stroke:" + color + "'/>");
 
             var w:Float = distance * distStretch + textOutputSize.w;
             var h:Float = textOutputSize.h + (mDistSubCladeAndSubClade << 1);
@@ -147,8 +147,8 @@ class CladePlotter
             var h:Float = childPlotStartY - y;
             var midPoint:Float = (firstMidPoint + lastMidPoint) / 2;
             
-            result.add("<line x1='" + childPlotStartX + "' y1='" + firstMidPoint + "' x2='" + childPlotStartX + "' y2='" + lastMidPoint + "' style='stroke:" + color + "'/>");
-            result.add("<line x1='" + x + "' y1='" + midPoint + "' x2='" + childPlotStartX + "' y2='" + midPoint + "' style='stroke:" + color + "'/>");
+            result.push("<line x1='" + childPlotStartX + "' y1='" + firstMidPoint + "' x2='" + childPlotStartX + "' y2='" + lastMidPoint + "' style='stroke:" + color + "'/>");
+            result.push("<line x1='" + x + "' y1='" + midPoint + "' x2='" + childPlotStartX + "' y2='" + midPoint + "' style='stroke:" + color + "'/>");
             
             return {
                 w: w,
