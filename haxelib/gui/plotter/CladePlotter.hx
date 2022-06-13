@@ -16,6 +16,7 @@
 package haxelib.gui.plotter;
 
 import haxelib.bio.phylo.Clade;
+import haxelib.iterators.EnumerateIterator;
 import haxelib.system.System;
 
 /**
@@ -44,7 +45,8 @@ class CladePlotter
     private var mOutputTextSize:Int = System.getIntProperty("CladePlotter.outputTextSize", 12);
     private var mOutputTextColor:String = System.getProperty("CladePlotter.nameTextColor", "grey");
     
-    private var mDistStretch:Int = System.getIntProperty("CladePlotter.distOutputAndLine", 120);
+    private var mDistStretchAutoCalculation:Bool = System.getBoolProperty("CladePlotter.distStretchAuto", true);
+    private var mDistStretch:Float = System.getFloatProperty("CladePlotter.distOutputAndLine", 120);
     private var mDistSubCladeAndSubClade = System.getIntProperty("CladePlotter.subCladeToSubCladeDist", 5);
     
     /**
@@ -98,27 +100,27 @@ class CladePlotter
     /**
      * Paint a subclade.
      */
-    private function paintClade(result:List<String>, c:Clade, x:Float, y:Float):{ w:Float, h:Float, midPoint:Float } {
+    private function paintClade(result:List<String>, c:Clade, x:Float, y:Float, distStretch:Float):{ w:Float, h:Float, midPoint:Float } {
         if (c.isLeaf()) {
             var distance:Float = c.getDistance();
             var color:String = c.getColor().toString();
 
-            var textOutputStartX = x + distance * mDistStretch;
+            var textOutputStartX = x + distance * distStretch;
             var textOutputStartY = y + mDistSubCladeAndSubClade;
             var textOutputSize:{ w:Float, h:Float, midPoint:Float } = paintTextOfClade(result, c, textOutputStartX, textOutputStartY);
             
             result.add("<line x1='" + x + "' y1='" + textOutputSize.midPoint + "' x2='" + textOutputStartX + "' y2='" + textOutputSize.midPoint + "' title='" + distance + "' style='stroke:" + color + "'/>");
 
-            var w:Float = distance * mDistStretch + textOutputSize.w;
+            var w:Float = distance * distStretch + textOutputSize.w;
             var h:Float = textOutputSize.h + (mDistSubCladeAndSubClade << 1);
             return { w: w, h: h, midPoint: textOutputSize.midPoint };
         } else {
             var distance:Float = c.getDistance();
             var color:String = c.getColor().toString();
             
-            var w:Float = distance * mDistStretch;
+            var w:Float = distance * distStretch;
             
-            var childPlotStartX:Float = x + distance * mDistStretch;
+            var childPlotStartX:Float = x + distance * distStretch;
             var childPlotStartY:Float = y;
             
             var firstMidPoint:Float = 0;
@@ -126,8 +128,8 @@ class CladePlotter
             
             var first:Bool = true;
             for (child in c) {
-                var size:{ w:Float, h:Float, midPoint:Float } = paintClade(result, child, childPlotStartX, childPlotStartY);
-                w = Math.max(w, size.w + distance * mDistStretch);
+                var size:{ w:Float, h:Float, midPoint:Float } = paintClade(result, child, childPlotStartX, childPlotStartY, distStretch);
+                w = Math.max(w, size.w + distance * distStretch);
                 childPlotStartY += size.h;
                 lastMidPoint = size.midPoint;
                 
@@ -135,7 +137,7 @@ class CladePlotter
                     firstMidPoint = size.midPoint;
                     
                     var textOutputSize:{ w:Float, h:Float, midPoint:Float } = paintTextOfClade(result, c, childPlotStartX, childPlotStartY);
-                    w = Math.max(w, textOutputSize.w + distance * mDistStretch);
+                    w = Math.max(w, textOutputSize.w + distance * distStretch);
                     childPlotStartY += textOutputSize.h;
                     
                     first = false;
@@ -157,11 +159,62 @@ class CladePlotter
     }
     
     /**
+     * Get all distances.
+     */
+    private function getDistances(c:Clade):Array<Float> {
+        var result:Array<Float> = new Array<Float>();
+        if (! c.isRoot()) {
+            result.push(c.getDistance());
+        }
+        for (child in c) {
+            result.push(child.getDistance());
+        }
+        return result;
+    }
+    
+    /**
+     * Get shortest distance.
+     */
+    private function getMedianDistance(c:Clade):Float {
+        var dists:Array<Float> = getDistances(c);
+        dists.sort((a, b) -> {
+            if (a == b) return 0;
+            if (a > b) return 1;
+            return -1;
+        });
+        if (dists.length == 0) {
+            return 0;
+        } else {
+            var midPoint:Int = Math.ceil(dists.length / 2);
+            for (ele in new EnumerateIterator<Float>(dists.iterator())) {
+                if (ele.idx == midPoint) {
+                    return ele.element;
+                }
+            }
+            return 0;
+        }
+    }
+    
+    /**
+     * Calculate a useful stretch factor.
+     */
+    private function calcStretch(c:Clade):Float {
+        var dist:Float = getMedianDistance(c);
+        if (dist == 0) {
+            return mDistStretch;
+        }
+        return 100 / dist;
+    }
+    
+    /**
      * Plot a particular clade.
      */
     public function plotClade(c:Clade):String {
         var innerSvgCodeAsList:List<String> = new List<String>();
-        var size:{ w:Float, h:Float, midPoint:Float } = paintClade(innerSvgCodeAsList, c, mBorderDistLeft, mBorderDistUp);
+        
+        var distStretch:Float = (mDistStretchAutoCalculation)? calcStretch(c) : mDistStretch;
+        var size:{ w:Float, h:Float, midPoint:Float } = paintClade(innerSvgCodeAsList, c, mBorderDistLeft, mBorderDistUp, distStretch);
+        
         var innerSvgCode:String = innerSvgCodeAsList.join("");
         var width:Float = size.w + mBorderDistLeft + mBorderDistRight;
         var height:Float = size.h + mBorderDistUp + mBorderDistDown;
