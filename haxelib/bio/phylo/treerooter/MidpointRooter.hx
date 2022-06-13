@@ -97,7 +97,7 @@ class MidpointRooter extends BaseRooter
         for (ele in path.path) {
             if (last != null) {
                 var length:Float = graph.getEdge(ele, last);
-                var midPointLength:Float = midPointLength - length;
+                midPointLength = midPointLength - length;
                 if (midPointLength < 0) {
                     return { v1: ele, v2: last };
                 }
