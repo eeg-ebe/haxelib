@@ -47,7 +47,7 @@ class CladeColorer
             var i:Int = 0;
             for (part in parts) {
                 if (part != null && part.contains(leafName)) {
-                    var color:Color = colors[i];
+                    var color:Color = colors[i % colors.length];
                     c.setColor(color);
                     break;
                 }
