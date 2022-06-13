@@ -132,21 +132,22 @@ class KOverTheta
         if (clade != null && mAddSets) {
             clade.addOutput(c1.toString() + " <-> " + c2.toString());
         }
+        
         var k:Float = calcK(c1, c2, distanceMatrix, sequenceLength);
         if (clade != null && mAddK) {
             clade.addOutput("k=" + Misc.floatToStringPrecision(k, mPrecision));
         }
-        var theta1:Float = calcTheta(c1, distanceMatrix, sequenceLength);
-        var theta2:Float = calcTheta(c2, distanceMatrix, sequenceLength);
-        if (clade != null && mAddTheta) {
-            clade.addOutput("theta1=" + Misc.floatToStringPrecision(theta1, mPrecision) + ", theta2=" + Misc.floatToStringPrecision(theta2, mPrecision));
-        }
-        
         if (k == 0) {
             if (clade != null && mAddShortcutDesc) {
                 clade.addOutput("k==0");
             }
             return true;
+        }
+        
+        var theta1:Float = calcTheta(c1, distanceMatrix, sequenceLength);
+        var theta2:Float = calcTheta(c2, distanceMatrix, sequenceLength);
+        if (clade != null && mAddTheta) {
+            clade.addOutput("theta1=" + Misc.floatToStringPrecision(theta1, mPrecision) + ", theta2=" + Misc.floatToStringPrecision(theta2, mPrecision));
         }
         if (theta1 == -1 || theta2 == -1) {
             if (clade != null && mAddShortcutDesc) {
