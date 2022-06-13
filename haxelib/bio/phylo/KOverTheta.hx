@@ -141,14 +141,14 @@ class KOverTheta
             clade.addOutput("theta1=" + Misc.floatToStringPrecision(theta1, mPrecision) + ", theta2=" + Misc.floatToStringPrecision(theta2, mPrecision));
         }
         
+        if (k == 0) {
+            return true;
+        }
         if (theta1 == -1 || theta2 == -1) {
             return true;
         }
         
         if (mDecisionRule == 0) {
-            if (k == 0) {
-                return true;
-            }
             var n1:Int = c1.size();
             var n2:Int = c2.size();
             var kDivTheta1:Float = k / theta1;
