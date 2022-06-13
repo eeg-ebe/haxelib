@@ -45,7 +45,7 @@ abstract class BaseRerooter
             return point;
         }
         // need to reroot
-        var result:Clade = new Clade("root");
+        var result:Clade = new Clade();
         var child1:Clade = copyCladesDown(point);
         var child2:Clade = copyCladesUp(point.getParent(), point);
         child1.setDistance(child1.getDistance() / 2);

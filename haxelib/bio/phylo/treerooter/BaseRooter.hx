@@ -45,7 +45,7 @@ abstract class BaseRooter
         if (edgeLength == null) {
             throw "Edge to root at not found!";
         }
-        var result:Clade = new Clade("root");
+        var result:Clade = new Clade();
         var child1:Clade = createSubClades(graph, rootPoint.v1, rootPoint.v2);
         var child2:Clade = createSubClades(graph, rootPoint.v2, rootPoint.v1);
         child1.setDistance(edgeLength / 2);
