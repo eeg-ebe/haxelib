@@ -137,6 +137,18 @@ class KOverTheta
         if (clade != null && mAddK) {
             clade.addOutput("k=" + Misc.floatToStringPrecision(k, mPrecision));
         }
+        if (Math.isNaN(k)) {
+            if (clade != null && mAddShortcutDesc) {
+                clade.addOutput("k isNaN");
+            }
+            return false;
+        }
+        if (k == Math.POSITIVE_INFINITY) {
+            if (clade != null && mAddShortcutDesc) {
+                clade.addOutput("k is inf");
+            }
+            return false;
+        }
         if (k == 0) {
             if (clade != null && mAddShortcutDesc) {
                 clade.addOutput("k==0");
