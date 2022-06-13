@@ -24,6 +24,13 @@ class Misc
 {
     // tks to https://stackoverflow.com/questions/23689001/how-to-reliably-format-a-floating-point-number-to-a-specified-number-of-decimal
     public static function floatToStringPrecision(n:Float, prec:Int) {
+        if (Math.isNaN(n)) {
+            return "NaN";
+        } else if (n == Math.POSITIVE_INFINITY) {
+            return "inf";
+        } else if (n == Math.NEGATIVE_INFINITY) {
+            return "inf";
+        }
         n = Math.round(n * Math.pow(10, prec));
         var str:String = '' + n;
         var len:Int = str.length;
