@@ -170,7 +170,7 @@ class KOverTheta
             var theta:Float = (theta1 > theta2) ? theta1 : theta2;
             var ratio:Float = k / theta;
             if (clade != null && mAddFinalValue) {
-                clade.addOutput("K/theta=" + Misc.floatToStringPrecision(ratio, mPrecision));
+                clade.addOutput("K/θ=" + Misc.floatToStringPrecision(ratio, mPrecision));
             }
             return ratio <= mDecisionThreshold;
         } else {
