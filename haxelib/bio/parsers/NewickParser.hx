@@ -106,17 +106,17 @@ class NewickParser
         // check if first can be interpreted as bootstrap value (.DND Clustal newick format)
         var firstAsFloat:Float = Std.parseFloat(first);
         var secondAsFloat:Float = Std.parseFloat(second);
-        if (!Math.isNaN(firstAsFloat) && 0.0 <= firstAsFloat && firstAsFloat <= 100.0 && !Math.isNaN(secondAsFloat) && 0 <= secondAsFloat) {
+        if (!Math.isNaN(firstAsFloat) && 0.0 <= firstAsFloat && !Math.isNaN(secondAsFloat) && 0 <= secondAsFloat) {
             // .DND Clustal newick format. Bootstrap values will be written instead of name
-            return new Clade("", secondAsFloat, firstAsFloat / 100);
+            return new Clade("", secondAsFloat, firstAsFloat);
         }
         if (second.indexOf("[") != -1 && StringTools.endsWith(second, "]")) {
             // .PHB Clustal newick format
             var parts:Array<String> = second.split("[");
             var distance:Float = Std.parseFloat(parts[0]);
             var bootstrap:Float = Std.parseFloat(parts[1].substring(0, parts[1].length - 1));
-            if (!Math.isNaN(distance) && !Math.isNaN(bootstrap) && 0 <= distance && 0.0 <= bootstrap && bootstrap <= 100.0) {
-                return new Clade(first, distance, bootstrap / 100);
+            if (!Math.isNaN(distance) && !Math.isNaN(bootstrap) && 0 <= distance && 0.0 <= bootstrap) {
+                return new Clade(first, distance, bootstrap);
             }
         }
         if (!Math.isNaN(secondAsFloat) && 0 <= secondAsFloat) {

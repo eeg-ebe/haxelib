@@ -120,7 +120,7 @@ class Clade
      * Set the bootstrap value of this clade.
      */
     public function setBootstrapValue(b:Float):Void {
-        if (0 <= b && b <= 1) {
+        if (0 <= b) {
             mBootstrapValue = b;
         } else {
             throw "Bootstrap value must be between 0 and 1, not " + b + "!";
