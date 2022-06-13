@@ -37,7 +37,6 @@ abstract class BaseRerooter
             throw "No graph to root given!";
         }
         var point:Clade = getRootingPoint(graph);
-        trace(point.getName());
         if (point == null) {
             throw "Rerooting point not found!";
         }
