@@ -89,6 +89,16 @@ class NewickParser
     }
     
     /**
+     * Parse a number.
+     */
+    private static function parseNumber(s:String):Float {
+        if (s != null && s != "" && ((~/^[0-9\.Ee\-\+]+$/).match(s))) {
+            return Std.parseFloat(s);
+        }
+        return Math.NaN;
+    }
+    
+    /**
      * Create a clade object by a string.
      */
     private static function createCladeByStr(s:String):Clade {
@@ -104,8 +114,8 @@ class NewickParser
         var first:String = arr[0];
         var second:String = arr[1];
         // check if first can be interpreted as bootstrap value (.DND Clustal newick format)
-        var firstAsFloat:Float = Std.parseFloat(first);
-        var secondAsFloat:Float = Std.parseFloat(second);
+        var firstAsFloat:Float = parseNumber(first);
+        var secondAsFloat:Float = parseNumber(second);
         if (!Math.isNaN(firstAsFloat) && 0.0 <= firstAsFloat && !Math.isNaN(secondAsFloat) && 0 <= secondAsFloat) {
             // .DND Clustal newick format. Bootstrap values will be written instead of name
             return new Clade("", secondAsFloat, firstAsFloat);
@@ -113,8 +123,8 @@ class NewickParser
         if (second.indexOf("[") != -1 && StringTools.endsWith(second, "]")) {
             // .PHB Clustal newick format
             var parts:Array<String> = second.split("[");
-            var distance:Float = Std.parseFloat(parts[0]);
-            var bootstrap:Float = Std.parseFloat(parts[1].substring(0, parts[1].length - 1));
+            var distance:Float = parseNumber(parts[0]);
+            var bootstrap:Float = parseNumber(parts[1].substring(0, parts[1].length - 1));
             if (!Math.isNaN(distance) && !Math.isNaN(bootstrap) && 0 <= distance && 0.0 <= bootstrap) {
                 return new Clade(first, distance, bootstrap);
             }
