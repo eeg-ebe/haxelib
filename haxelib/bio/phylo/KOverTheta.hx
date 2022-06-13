@@ -37,6 +37,7 @@ class KOverTheta
     private var mAddTheta:Bool = System.getBoolProperty("KOverTheta.addK", false);
     private var mAddFinalValue:Bool = System.getBoolProperty("KOverTheta.addKoTheta", true);
     private var mPrecision:Int = System.getIntProperty("KOverTheta.precision", 3);
+    private var mAddShortcutDesc:Bool = System.getBoolProperty("KOverTheta.addShortcutDesc", false);
     
     /**
      * The decision rule to take. Currently (0) Rosenberg and (1) 4-times-rule are implemented.
@@ -142,9 +143,15 @@ class KOverTheta
         }
         
         if (k == 0) {
+            if (clade != null && mAddShortcutDesc) {
+                clade.addOutput("k==0");
+            }
             return true;
         }
         if (theta1 == -1 || theta2 == -1) {
+            if (clade != null && mAddShortcutDesc) {
+                clade.addOutput("theta==-1");
+            }
             return true;
         }
         
