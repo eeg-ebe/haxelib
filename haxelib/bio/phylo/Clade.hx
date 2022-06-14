@@ -300,6 +300,33 @@ class Clade
     }
     
     /**
+     * Name inner clades.
+     */
+    public function nameInnerClades(?i:Int=0):Int {
+        if (isLeaf()) {
+            return i;
+        }
+        setName("Inner" + i);
+        i++;
+        for (child in this) {
+            child.nameInnerClades(i);
+        }
+        return i;
+    }
+    
+    /**
+     * Remove names of inner clades.
+     */
+    public function removeNamesOfInnerClades():Void {
+        if (!isLeaf()) {
+            setName(null);
+            for (child in this) {
+                child.removeNamesOfInnerClades();
+            }
+        }
+    }
+    
+    /**
      * Get a newick representation of this clade.
      */
     public function toNewickString(?addNames:Bool=true,?addDistance:Bool=true,?addBootstrap:Bool=true):String {
