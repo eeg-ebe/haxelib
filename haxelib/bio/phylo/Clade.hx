@@ -289,6 +289,17 @@ class Clade
     }
     
     /**
+     * Count clades in tree.
+     */
+    public function countCaldesInTree():Int {
+        var sum:Int = 1;
+        for (child in this) {
+            sum += child.countCaldesInTree();
+        }
+        return sum;
+    }
+    
+    /**
      * Get a newick representation of this clade.
      */
     public function toNewickString(?addNames:Bool=true,?addDistance:Bool=true,?addBootstrap:Bool=true):String {
