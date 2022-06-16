@@ -16,6 +16,7 @@
 package haxelib.bio.phylo;
 
 import haxe.ds.StringMap;
+import haxelib.ds.set.StringSet;
 import haxelib.gui.Color;
 
 /**
@@ -44,6 +45,11 @@ class Clade
      * The color of this clade (for plotting).
      */
     private var mColor:Color;
+    
+    /**
+     * Possible marks connected to this clade.
+     */
+    private var mMarks:StringSet;
     
     /**
      * Extra information to output (in case this clade is plotted).
@@ -76,6 +82,7 @@ class Clade
         mOutput = new List<String>();
         mConnectedInfo = new StringMap<Dynamic>();
         mChilds = new List<Clade>();
+        mMarks = new StringSet();
     }
     
     /**
@@ -139,6 +146,31 @@ class Clade
      */
     public function setColor(color:Color):Void {
         mColor = (color == null) ? Color.parse("BLACK") : color;
+    }
+    
+    /**
+     * Add a mark to this clade.
+     */
+    public function addMark(mark:String):Void {
+        mMarks.add(mark);
+    }
+    
+    /**
+     * Remove a mark from this clade.
+     */
+    public function removeMark(mark:String):Void {
+        mMarks.remove(mark);
+    }
+    
+    /**
+     * Get marks.
+     */
+    public function getMarks():List<String> {
+        var result:List<String> = new List<String>();
+        for (item in mMarks) {
+            result.add(item);
+        }
+        return result;
     }
     
     /**

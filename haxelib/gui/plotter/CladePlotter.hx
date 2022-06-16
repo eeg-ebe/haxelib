@@ -29,10 +29,10 @@ class CladePlotter
     /**
      * Plotting settings.
      */
-    private var mBorderDistLeft:Int = System.getIntProperty("CladePlotter.borderDistLeft", 5);
-    private var mBorderDistRight:Int = System.getIntProperty("CladePlotter.borderDistRight", 5);
-    private var mBorderDistUp:Int = System.getIntProperty("CladePlotter.borderDistUp", 5);
-    private var mBorderDistDown:Int = System.getIntProperty("CladePlotter.borderDistDown", 5);
+    private var mBorderDistLeft:Int = System.getIntProperty("CladePlotter.borderDistLeft", 10);
+    private var mBorderDistRight:Int = System.getIntProperty("CladePlotter.borderDistRight", 10);
+    private var mBorderDistUp:Int = System.getIntProperty("CladePlotter.borderDistUp", 10);
+    private var mBorderDistDown:Int = System.getIntProperty("CladePlotter.borderDistDown", 10);
     private var mTextPrintMarginX:Int = System.getIntProperty("CladePlotter.textPrintMarginX", 5);
     private var mTextPrintMarginY:Int = System.getIntProperty("CladePlotter.textPrintMarginY", 5);
     private var mTextFontName:String = System.getProperty("CladePlotter.textFontName", "Courier New");
@@ -150,6 +150,15 @@ class CladePlotter
             result.push("<line x1='" + childPlotStartX + "' y1='" + firstMidPoint + "' x2='" + childPlotStartX + "' y2='" + lastMidPoint + "' style='stroke:" + color + "'/>");
             result.push("<line x1='" + x + "' y1='" + midPoint + "' x2='" + childPlotStartX + "' y2='" + midPoint + "' style='stroke:" + color + "'/>");
             
+            for (mark in c.getMarks()) {
+                if (mark == "!") {
+                    result.add("<line x1='" + (childPlotStartX - 4) + "' y1='" + (midPoint - 7) + "' x2='" + (childPlotStartX - 4) + "' y2='" + (midPoint - 15) + "' style='stroke:#000;stroke-width: 2'/>");
+                    result.add("<circle cx='" + (childPlotStartX - 4) + "' cy='" + (midPoint - 4) + "' r='1' style='fill:#000'/>");
+                } else if (mark == "O") {
+                    result.add("<circle cx='" + (childPlotStartX - 3) + "' cy='" + (midPoint - 3) + "' r='1.5' style='fill:#000'/>");
+                }
+            }
+
             return {
                 w: w,
                 h: h,
