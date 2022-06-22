@@ -32,7 +32,7 @@ class Color
      * The logger for this class.
      */
     @:final
-    private static var logger:BaseLogger = new BaseLogger("be.ulb.eeg.ebe.haxelib.gui.Color");
+    private static var logger:BaseLogger = new BaseLogger("haxelib.gui.Color");
 
     /**
      * HashSet listing known color names.
