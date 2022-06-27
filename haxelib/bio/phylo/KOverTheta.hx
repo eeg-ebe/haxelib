@@ -98,8 +98,13 @@ class KOverTheta
             }
         }
         
+        var p:Float = diff / comparisons;
+        if (p >= 0.75) {
+            // TODO
+        }
+        
         var result:Float = 0;
-        if (diff != 0) { result = - (3.0 / 4) * Math.log (1 - 4 * diff / (3.0 * comparisons)); }
+        if (diff != 0) { result = - (3.0 / 4) * Math.log (1 - 4.0 / 3 * p); }
         return result;
     }
     
@@ -120,6 +125,10 @@ class KOverTheta
             }
         }
         var pi:Float = (diff == 0 || count == 0) ? 2 / (sequenceLength * n * (n - 1)) : diff / count;
+        
+        if (pi >= 0.75) {
+            // TODO
+        }
         
         var theta:Float = pi / (1 - 4 * pi / 3);
         return theta;
