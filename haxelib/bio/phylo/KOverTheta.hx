@@ -309,6 +309,82 @@ class KOverTheta
         return result.other;
     }
     
+    /**
+     * Run the K over Theta algorithm on a particular clade.
+     */
+    private function runKOverThetaDown_(clade:Clade, distanceMatrix:StringMatrix, sequenceLength:Int):List<StringSet> {
+        if (clade.isLeaf()) {
+            var name:String = clade.getName();
+            var mySet:StringSet = new StringSet();
+            mySet.add(name);
+            
+            var list:List<StringSet> = new List<StringSet>();
+            list.add(mySet);
+            
+            return list;
+        } else {
+            var nrSubClades:Int = clade.countChilds();
+            
+            // only one subclade
+            if (nrSubClades == 1) {
+                var subClade:Clade = clade.getLeafs().first();
+                return runKOverThetaDown_(subClade, distanceMatrix, sequenceLength);
+            }
+            
+            // only two subclades
+            if (nrSubClades == 2) {
+                var subClade1:Clade = clade.getLeafs().first();
+                var subClade2:Clade = clade.getLeafs().last();
+                
+                var stringSet1:StringSet = getStringSetForClade(subClade1);
+                var stringSet2:StringSet = getStringSetForClade(subClade2);
+                
+                var same:Bool = belongToSameSpecies(clade, stringSet1, stringSet2, distanceMatrix, sequenceLength);
+                if (same) {
+                    var union:StringSet = stringSet1.union(stringSet2);
+                    var list:List<StringSet> = new List<StringSet>();
+                    list.add(union);
+                    return list;
+                }
+            }
+            
+            // multiple subclades
+            if (nrSubClades > 2) {
+                throw "Bottom up: Till now multiclades not implemented!";
+            }
+            
+            // different childs
+            var list:List<StringSet> = new List<StringSet>();
+            for (child in clade) {
+                var subresults:List<StringSet> = runKOverThetaDown_(child, distanceMatrix, sequenceLength);
+                for (subResultStringSet in subresults) {
+                    list.add(subResultStringSet);
+                }
+            }
+            return list;
+        }
+        return null;
+    }
+    /**
+     * Run the K over Theta algorithm downwords on a particular clade.
+     */
+    public function runKOverThetaDown(clade:Clade, distanceMatrix:StringMatrix, sequenceLength:Int):List<StringSet> {
+        var result = runKOverThetaDown_(clade, distanceMatrix, sequenceLength);
+        return result;
+    }
+    
+    /**
+     * Get the stringset for a particular clade.
+     */
+    private function getStringSetForClade(clade:Clade):StringSet {
+        var result:StringSet = new StringSet();
+        var leafs:List<Clade> = clade.getLeafs();
+        for (leaf in leafs) {
+            var name:String = clade.getName();
+            result.add(name);
+        }
+        return result;
+    }
     public static function main() {
         var cA:Clade = new Clade("A");
         var cB:Clade = new Clade("B");
